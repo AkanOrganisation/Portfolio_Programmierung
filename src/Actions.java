@@ -1,14 +1,16 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 interface Buy{
-    default void buy(Player player, CatalogProduct product, int quantity) throws InterruptedException {
+    default BuyOrder buy(Player player, CatalogProduct product, int quantity) throws InterruptedException {
         BuyOrder order = new BuyOrder(player, product, quantity);
-        executeBuyOrder(order);
+        //waitBuyOrder(order);
+        return order;
     }
 
-    default void executeBuyOrder(BuyOrder order) throws InterruptedException {
+    default void waitForBuyOrder(BuyOrder order) throws InterruptedException {
         synchronized (order) {
             while (!order.isComplete()) {
                 order.wait();
@@ -28,7 +30,7 @@ interface Consume extends Buy {
 
         if (!(availableQuantity >= quantity)) {
             // Not enough stock, buy more and then consume
-            buy(player, product, quantity - availableQuantity);
+            waitForBuyOrder(buy(player, product, quantity - availableQuantity));
         }
         for (int i = 0; i < quantity; i++) {
             products.remove(0);
@@ -51,20 +53,24 @@ interface Build extends Buy {
         // Check if the player has enough materials to build the product
         Map<CatalogProduct, Integer> availableMaterials = player.stock.getProductQuantities();
         boolean hasEnoughMaterials = true;
+        ArrayList<BuyOrder> buyOrders = new ArrayList<>();
         for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
             CatalogProduct material = entry.getKey();
             int requiredQuantity = entry.getValue();
             int availableQuantity = availableMaterials.getOrDefault(material, 0);
             if (availableQuantity < requiredQuantity) {
                 // Not enough materials, buy more and then build
-                buy(player, material, requiredQuantity - availableQuantity);
+                buyOrders.add(buy(player, material, requiredQuantity - availableQuantity));
                 hasEnoughMaterials = false;
             }
         }
 
         if (!hasEnoughMaterials) {
             // Wait for the buy orders to complete
-            Thread.sleep(1000);
+            while(buyOrders.size() > 0) {
+                waitForBuyOrder(buyOrders.get(0));
+                buyOrders.remove(0);
+            }
         }
 
         // Calculate how many products can be built
