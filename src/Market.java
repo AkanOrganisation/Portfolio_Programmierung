@@ -79,4 +79,9 @@ public class Market implements Runnable {
             }
         }
     }
+
+    public void clearOrders() {
+        this.buyOrders.clear();
+        this.sellOrders.clear();
+    }
 }

@@ -6,6 +6,8 @@ public class Activity implements Buy, Sell, Build, Consume {
     private CatalogProduct product;
     private int minQuantity;
     private int maxQuantity;
+    private boolean finished;
+
 
     public Activity(Player player, ActivityType type, CatalogProduct product, int minQuantity, int maxQuantity) {
         this.player = player;
@@ -13,6 +15,8 @@ public class Activity implements Buy, Sell, Build, Consume {
         this.product = product;
         this.minQuantity = minQuantity;
         this.maxQuantity = maxQuantity;
+        this.finished = false;
+
     }
 
     public void execute() throws InterruptedException {
@@ -33,6 +37,10 @@ public class Activity implements Buy, Sell, Build, Consume {
             default:
                 throw new IllegalArgumentException("Invalid activity type: " + type);
         }
+        this.finished = true;
     }
 
+    public boolean isFinished() {
+        return this.finished;
+    }
 }
