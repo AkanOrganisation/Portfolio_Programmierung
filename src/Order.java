@@ -21,7 +21,7 @@ public abstract class Order {
     public abstract void execute(int quantity);
 
     void finish(){
-        // TODO: 17.04.2023 remove this order from Market 
+        // TODO: 17.04.2023  may be absolute
         // Implementation to be defined
     }
 

@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         // Load catalog and players from file
-        CatalogProduct.loadFromFile(catalogFilePath);
+        CatalogProduct.catalog =  CatalogProductLoader.loadCatalog(catalogFilePath);
         ArrayList<PlayerData> playersData = PlayerData.loadFromFile(playersFilePath);
 
         // Start market thread
