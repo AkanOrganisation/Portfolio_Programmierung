@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 public class Main {
-    static int maxRounds;
+    static int maxRounds = 5;
     static String catalogFilePath = "./src/Catalog.json";
     static String playersFilePath = "./src/players.json";
     public static boolean finished;
@@ -13,10 +13,8 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         // Load catalog and players from file
-        Arrays.stream(CatalogProductLoader.loadCatalog(catalogFilePath)).map(product -> CatalogProduct.catalog.add(product));
-        Arrays.stream(PlayerData.loadFromFile(playersFilePath)).map(playersData -> PlayerData.playersData.add(playersData));
-        System.out.println(PlayerData.playersData.size());
-
+        CatalogProduct.catalog.addAll(Arrays.asList(CatalogProductData.loadFromFile(catalogFilePath)));
+        PlayerData.playersData.addAll(Arrays.asList(PlayerData.loadFromFile(playersFilePath)));
 
         // Start market thread
         Thread marketThread = new Thread(Market.getInstance());

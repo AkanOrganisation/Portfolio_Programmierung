@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-class CatalogProductLoader {
+class CatalogProductData {
 
-    public static CatalogProduct[] loadCatalog(String filePath) {
+    public static CatalogProduct[] loadFromFile(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         try {
@@ -46,8 +46,8 @@ class PlayerData implements Runnable {
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         try {
             // Read JSON data from file
-            PlayerData[] PlayersData = mapper.readValue(new File(filePath), PlayerData[].class);
-            return PlayersData;
+            PlayerData[] playersData = mapper.readValue(new File(filePath), PlayerData[].class);
+            return playersData;
         } catch (IOException e) {
             e.printStackTrace();
         }
