@@ -1,5 +1,9 @@
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 public class Player implements Runnable {
 
@@ -13,15 +17,19 @@ public class Player implements Runnable {
     public ArrayList<Activity> activities;
     private CountDownLatch latch;
 
-    public Player(String name, PlayerType type, ArrayList<Activity> activities) {
-        this.id = nextId;
-        nextId++;
+    public Player(String name, PlayerType type, ArrayList<ActivityData> activities) {
+        this.id = getNextId();
         this.type = type;
-        this.activities = activities;
+        this.activities = activities.stream().map(activityData -> new Activity(this, activityData.type, activityData.product, activityData.minQuantity, activityData.maxQuantity )).collect(Collectors.toCollection(ArrayList::new));
         this.stock = new Stock();
 
         //add a reference to self
         addToList(this);
+    }
+
+
+    private synchronized int getNextId() {
+        return id++;
     }
 
     private synchronized static void addToList(Player player) {

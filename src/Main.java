@@ -3,8 +3,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class Main {
     static int maxRounds;
-    static String catalogFilePath;
-    static String playersFilePath;
+    static String catalogFilePath = "./src/Catalog.json";
+    static String playersFilePath = "./src/players.json";
     public static boolean finished;
     static int currentRound = 0;
 
@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         // Load catalog and players from file
         CatalogProduct.catalog =  CatalogProductLoader.loadCatalog(catalogFilePath);
-        ArrayList<PlayerDataLoader> playersData = PlayerDataLoader.loadFromFile(playersFilePath);
+        ArrayList<PlayerData> playersData = PlayerData.loadFromFile(playersFilePath);
 
         // Start market thread
         Thread marketThread = new Thread(Market.getInstance());
@@ -21,10 +21,10 @@ public class Main {
         threads.add(marketThread);
 
         // Start player threads
-        for (PlayerDataLoader playerData : playersData) {
-            Thread playerThread = new Thread(new Player(playerData.getName(), playerData.getType(), playerData.getActivities()));
-            playerThread.start();
-            threads.add(playerThread);
+        for (PlayerData playerData : playersData) {
+            Thread playerDataThread = new Thread(new Player(playerData.getName(), playerData.getType(), playerData.getActivities()));
+            playerDataThread.start();
+            threads.add(playerDataThread);
         }
 
         // Loop through rounds

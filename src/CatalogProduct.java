@@ -1,3 +1,6 @@
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +29,19 @@ public class CatalogProduct {
 
         // Add the newly created instance to the catalog
         catalog.add(this);
+    }
+
+    @JsonCreator
+    public CatalogProduct(@JsonProperty("id") String id,
+                          @JsonProperty("name") String name,
+                          @JsonProperty("recommendedPrice") double price) {
+        this.id = Integer.parseInt(id);
+        this.name = name;
+        this.recommendedPrice = recommendedPrice;
+    }
+
+    public static CatalogProduct getProductByName(String productName) {
+        return catalog.stream().filter(product -> product.name == productName).findFirst().orElse(null);
     }
 
     public String getName() {
