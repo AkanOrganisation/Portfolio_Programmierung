@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         // Load catalog and players from file
         CatalogProduct.catalog =  CatalogProductLoader.loadCatalog(catalogFilePath);
-        ArrayList<PlayerData> playersData = PlayerData.loadFromFile(playersFilePath);
+        ArrayList<PlayerDataLoader> playersData = PlayerDataLoader.loadFromFile(playersFilePath);
 
         // Start market thread
         Thread marketThread = new Thread(Market.getInstance());
@@ -21,7 +21,7 @@ public class Main {
         threads.add(marketThread);
 
         // Start player threads
-        for (PlayerData playerData : playersData) {
+        for (PlayerDataLoader playerData : playersData) {
             Thread playerThread = new Thread(new Player(playerData.getName(), playerData.getType(), playerData.getActivities()));
             playerThread.start();
             threads.add(playerThread);
