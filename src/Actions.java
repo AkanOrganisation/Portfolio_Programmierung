@@ -81,7 +81,7 @@ interface Build extends Buy {
             int availableQuantity = player.stock.getProductQuantities().getOrDefault(material, 0);
             maxQuantity = Math.min(maxQuantity, availableQuantity / requiredQuantity);
         }
-
+        if(maxQuantity==Integer.MAX_VALUE){return;}
         // Remove the required materials from the player's stock and add the built product
         for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
             CatalogProduct material = entry.getKey();
@@ -109,6 +109,7 @@ interface Sell extends Build {
         }
         // Sell the requested quantity of products or all the available products, whichever is smaller
         int quantityToSell = Math.min(quantity, availableQuantity);
+        if (quantityToSell == 0)return;
         new SellOrder(player, product, quantityToSell);
     }
 }

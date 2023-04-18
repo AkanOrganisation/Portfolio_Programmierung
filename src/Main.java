@@ -28,6 +28,10 @@ public class Main {
             threads.add(playerDataThread);
         }
 
+        while (Player.players.size() != PlayerData.playersData.size()){
+            continue;
+        }
+
         // Loop through rounds
         while (currentRound < maxRounds) {
             System.out.println("Round " + (currentRound + 1) + " started");

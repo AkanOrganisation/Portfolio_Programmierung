@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class Player implements Runnable {
 
     public static ArrayList<Player> players = new ArrayList<>();
-    private static int nextId = 1;
+    private static int nextId = 0;
     public int id;
     public PlayerType type;
     public Stock stock;
@@ -29,7 +29,7 @@ public class Player implements Runnable {
 
 
     private synchronized int getNextId() {
-        return id++;
+        return nextId++;
     }
 
     private synchronized static void addToList(Player player) {
@@ -39,8 +39,8 @@ public class Player implements Runnable {
     public void playRound() throws InterruptedException {
         prioritizeActivities();
         for(Activity activity : activities)activity.execute();
-        latch.countDown();
-        roundFinished = true;
+        this.latch.countDown();
+        this.roundFinished = true;
     }
 
     public void prioritizeActivities() {
@@ -60,13 +60,6 @@ public class Player implements Runnable {
     @Override
     public void run() {
         while (!Main.finished) {
-            synchronized (Main.class) {
-                try {
-                    Main.class.wait(); // Wait for notification from Main class
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
             // Play the round
             try {
                 playRound();
