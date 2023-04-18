@@ -8,12 +8,12 @@ public class Main {
     public static boolean finished;
     static int currentRound = 0;
 
-    static ArrayList<PlayerData> playersData = new ArrayList<PlayerData>();
-
     static ArrayList<Thread> threads = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException {
-        initialize();
+        // Load catalog and players from file
+        CatalogProduct.loadFromFile(catalogFilePath);
+        ArrayList<PlayerData> playersData = PlayerData.loadFromFile(playersFilePath);
 
         // Start market thread
         Thread marketThread = new Thread(Market.getInstance());
@@ -54,9 +54,4 @@ public class Main {
         for(Thread thread: threads) thread.join();
     }
 
-    private static void initialize() {
-        // Load catalog and players from file
-        CatalogProduct.loadFromFile(catalogFilePath);
-        playersData = PlayerData.loadFromFile(playersFilePath);
-    }
 }
