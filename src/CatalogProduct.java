@@ -37,7 +37,7 @@ public class CatalogProduct {
 
 
     public static CatalogProduct getProductByName(String productName) {
-        return catalog.stream().filter(product -> product.name == productName).findFirst().orElse(null);
+        return catalog.stream().filter(product -> product.name.equals(productName)).findFirst().orElse(null);
     }
 
     public static CatalogProduct getProductById(int id) {

@@ -1,5 +1,4 @@
-{
-  "players": [
+[
     {
       "name": "Siemens",
       "type": "manufacturer",
@@ -79,4 +78,4 @@
       ]
     }
   ]
-}
+

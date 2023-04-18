@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 public class Main {
@@ -12,8 +13,10 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         // Load catalog and players from file
-        CatalogProduct.catalog =  CatalogProductLoader.loadCatalog(catalogFilePath);
-        ArrayList<PlayerData> playersData = PlayerData.loadFromFile(playersFilePath);
+        Arrays.stream(CatalogProductLoader.loadCatalog(catalogFilePath)).map(product -> CatalogProduct.catalog.add(product));
+        Arrays.stream(PlayerData.loadFromFile(playersFilePath)).map(playersData -> PlayerData.playersData.add(playersData));
+        System.out.println(PlayerData.playersData.size());
+
 
         // Start market thread
         Thread marketThread = new Thread(Market.getInstance());
@@ -21,8 +24,8 @@ public class Main {
         threads.add(marketThread);
 
         // Start player threads
-        for (PlayerData playerData : playersData) {
-            Thread playerDataThread = new Thread(new Player(playerData.getName(), playerData.getType(), playerData.getActivities()));
+        for (PlayerData playerData : PlayerData.playersData) {
+            Thread playerDataThread = new Thread(playerData);
             playerDataThread.start();
             threads.add(playerDataThread);
         }

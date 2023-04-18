@@ -1,5 +1,4 @@
-{
-  "catalogProducts": [
+ [
     {
       "id": 1,
       "name": "Wood",
@@ -128,4 +127,4 @@
       ]
     }
   ]
-}
+
