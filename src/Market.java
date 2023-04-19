@@ -26,7 +26,12 @@ public class Market implements Runnable {
         }
         buyOrders.get(product).add(order);
         this.newOrders = true;
+        setNewOrders(true);
         this.notify();
+    }
+
+    private synchronized void setNewOrders(boolean b) {
+        newOrders = b;
     }
 
     public synchronized void addSellOrder(SellOrder order) {
@@ -36,7 +41,7 @@ public class Market implements Runnable {
             sellOrders.put(product, new TreeSet<>(sellOrderComparator));
         }
         sellOrders.get(product).add(order);
-        this.newOrders = true;
+        setNewOrders(true);
         this.notify();
     }
 
@@ -57,7 +62,7 @@ public class Market implements Runnable {
                 try {
                     // wait for a new order to be added
                     System.out.println("waiting for orders");
-                    wait(100);
+                    wait(500);
                 } catch (InterruptedException e) {
                     System.out.println("Market crashed");
                     e.printStackTrace();
@@ -65,6 +70,7 @@ public class Market implements Runnable {
             }
 
             if (gotNewOrders()){
+                setNewOrders(false);
                 // Match the orders
                 System.out.println("got new orders to match");
                 matchOrders();

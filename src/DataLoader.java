@@ -56,9 +56,9 @@ class PlayerData implements Runnable {
 
     @Override
     public void run() {
-        Thread thread = new Thread(new Player(this.name, this.type, activities ));
-        thread.start();
         try {
+            Thread thread = new Thread(new Player(this.name, this.type, activities ));
+            thread.start();
             thread.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
