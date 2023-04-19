@@ -62,7 +62,7 @@ public class Market implements Runnable {
                 try {
                     // wait for a new order to be added
                     System.out.println("waiting for orders");
-                    wait(500);
+                    wait(1000);
                 } catch (InterruptedException e) {
                     System.out.println("Market crashed");
                     e.printStackTrace();

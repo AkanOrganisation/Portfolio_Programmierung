@@ -45,7 +45,7 @@ public class Main {
             Synchronizer.allPlayersFinishedRound.await();
 
             // clear the market
-            Market.getInstance().clearOrders();
+            //Market.getInstance().clearOrders();
 
             // All players finished their turn, end the round
             Synchronizer.newRound.await();
