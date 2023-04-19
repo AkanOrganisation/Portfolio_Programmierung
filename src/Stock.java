@@ -9,13 +9,13 @@ public class Stock {
     public void removeProducts(CatalogProduct catalogProduct, int quantity) {
         if (stock.containsKey(catalogProduct)) {
             List<Product> products = stock.get(catalogProduct);
-            if (quantity <= products.size()) {
-                for (int i = 0; i < quantity; i++) {
-                    products.remove(0);
-                }
+            quantity = Math.min(products.size(), quantity);
+            for (int i = 0; i < quantity; i++) {
+                products.remove(0);
             }
         }
     }
+
 
     public void addProducts(CatalogProduct catalogProduct, int quantity) {
         List<Product> products = stock.computeIfAbsent(catalogProduct, k -> new ArrayList<>());

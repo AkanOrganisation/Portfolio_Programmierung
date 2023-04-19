@@ -2,24 +2,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-interface Buy{
-    default BuyOrder buy(Player player, CatalogProduct product, int quantity) throws InterruptedException {
+interface Buy {
+    default BuyOrder buy(Player player, CatalogProduct product, int quantity) {
         BuyOrder order = new BuyOrder(player, product, quantity);
-        //waitBuyOrder(order);
         return order;
     }
 
-    default void waitForBuyOrder(BuyOrder order) throws InterruptedException {
-        synchronized (order) {
-            while (!order.isComplete()) {
-                order.wait();
-            }
+    default BuyOrder waitForBuyOrder(BuyOrder order) throws InterruptedException {
+        while (!order.isComplete()) {
+            order.latch.await(100, TimeUnit.MILLISECONDS);
         }
-        if (Thread.currentThread().isInterrupted()) {
-            // If the thread was interrupted, propagate the interrupt.
-            throw new InterruptedException();
-        }
+        return order;
     }
 }
 
@@ -32,14 +27,17 @@ interface Consume extends Buy {
             // Not enough stock, buy more and then consume
             waitForBuyOrder(buy(player, product, quantity - availableQuantity));
         }
-        for (int i = 0; i < quantity; i++) {
-            products.remove(0);
-        }
+
+        player.stock.removeProducts(product, quantity);
     }
 }
 
 interface Build extends Buy {
     default void build(Player player, CatalogProduct product, int quantity) throws InterruptedException {
+        if (player.type == PlayerType.SUPPLIER) {
+            player.stock.addProducts(product, quantity);
+            return;
+        }
         List<Component> components = product.getComponents();
         Map<CatalogProduct, Integer> requiredMaterials = new HashMap<>();
 
@@ -67,7 +65,7 @@ interface Build extends Buy {
 
         if (!hasEnoughMaterials) {
             // Wait for the buy orders to complete
-            while(buyOrders.size() > 0) {
+            while (buyOrders.size() > 0) {
                 waitForBuyOrder(buyOrders.get(0));
                 buyOrders.remove(0);
             }
@@ -81,7 +79,9 @@ interface Build extends Buy {
             int availableQuantity = player.stock.getProductQuantities().getOrDefault(material, 0);
             maxQuantity = Math.min(maxQuantity, availableQuantity / requiredQuantity);
         }
-        if(maxQuantity==Integer.MAX_VALUE){return;}
+        if (maxQuantity == Integer.MAX_VALUE) {
+            return;
+        }
         // Remove the required materials from the player's stock and add the built product
         for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
             CatalogProduct material = entry.getKey();
@@ -109,7 +109,7 @@ interface Sell extends Build {
         }
         // Sell the requested quantity of products or all the available products, whichever is smaller
         int quantityToSell = Math.min(quantity, availableQuantity);
-        if (quantityToSell == 0)return;
-        new SellOrder(player, product, quantityToSell);
+        if (quantityToSell > 0)
+            new SellOrder(player, product, quantityToSell);
     }
 }

@@ -3,18 +3,20 @@ import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 public class Main {
-    static int maxRounds = 5;
+    static int maxRounds = 200;
     static String catalogFilePath = "./src/Catalog.json";
     static String playersFilePath = "./src/players.json";
-    public static boolean finished;
     static int currentRound = 0;
-
     static ArrayList<Thread> threads = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException {
         // Load catalog and players from file
         CatalogProduct.catalog.addAll(Arrays.asList(CatalogProductData.loadFromFile(catalogFilePath)));
         PlayerData.playersData.addAll(Arrays.asList(PlayerData.loadFromFile(playersFilePath)));
+
+        // set CountDown to the number of players
+        System.out.println("Numbers of players:" + PlayerData.playersData.size());
+        Synchronizer.allPlayersLoaded = new CountDownLatch(PlayerData.playersData.size());
 
         // Start market thread
         Thread marketThread = new Thread(Market.getInstance());
@@ -28,35 +30,35 @@ public class Main {
             threads.add(playerDataThread);
         }
 
-        while (Player.players.size() != PlayerData.playersData.size()){
-            continue;
-        }
+        // Wait all players loaded
+        System.out.println("Waiting for all players to load");
+        Synchronizer.allPlayersLoaded.await();
 
         // Loop through rounds
         while (currentRound < maxRounds) {
             System.out.println("Round " + (currentRound + 1) + " started");
 
             // Notify all players that a new round has started
-            final CountDownLatch roundLatch = new CountDownLatch(Player.players.size());
-            for (Player player : Player.players) {
-                player.setLatch(roundLatch);
-            }
+            Synchronizer.startNewRound(Player.players.size());
 
             // Wait for all players to finish their turn
-            roundLatch.await();
+            Synchronizer.allPlayersFinishedRound.await();
 
             // clear the market
             Market.getInstance().clearOrders();
 
-            // All players finished their turn, start a new round
+            // All players finished their turn, end the round
+            Synchronizer.newRound.await();
             currentRound++;
         }
 
         // notify all that the game is finished
-        finished = true;
+        System.out.println("game Finished");
+        Synchronizer.setGameFinished();
 
         // Stop all threads
         for(Thread thread: threads) thread.join();
+        System.out.println("finished");
     }
 
 }

@@ -8,14 +8,14 @@ public class SellOrder extends Order {
     }
 
     @Override
-    public void execute(int soldQuantity) {
+    public void execute(Player partner, int soldQuantity) {
         double totalPrice = soldQuantity * minPricePerUnit;
 
         // Reduce stock quantity and increase player's money
         issuer.stock.removeProducts(getItem(), soldQuantity);
         issuer.money += totalPrice;
         this.quantity -= soldQuantity;
-        System.out.println("Sold " + soldQuantity + " units of " + getItem().name + " for " + totalPrice + " to " + issuer.type + " " + issuer.id);
+        System.out.println(issuer.name + " Sold " + soldQuantity + " units of " + getItem().name + " for " + totalPrice + " to " + partner.type + " " + partner.name);
 
         // Check if the order is complete
         if (this.quantity == 0) {

@@ -1,5 +1,8 @@
+import java.util.concurrent.CountDownLatch;
+
 public abstract class Order {
     public Player issuer;
+    public CountDownLatch latch;
     private CatalogProduct item;
     public int quantity;
     public double priceUnit;
@@ -9,6 +12,7 @@ public abstract class Order {
         this.item = item;
         this.quantity = quantity;
         this.priceUnit = calculatePrice();
+        this.latch = new CountDownLatch(1);
     }
 
     private double calculatePrice() {
@@ -18,11 +22,10 @@ public abstract class Order {
     }
 
     // Abstract method to be implemented in subclasses
-    public abstract void execute(int quantity);
+    public abstract void execute(Player partner ,int quantity);
 
     void finish(){
-        // TODO: 17.04.2023  may be absolute
-        // Implementation to be defined
+        this.latch.countDown();
     }
 
     public CatalogProduct getItem() {

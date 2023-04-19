@@ -4,6 +4,7 @@ public class Market implements Runnable {
     private static Market instance = null;
     private final Map<CatalogProduct, SortedSet<BuyOrder>> buyOrders;
     private final Map<CatalogProduct, SortedSet<SellOrder>> sellOrders;
+    private boolean newOrders;
 
     private Market() {
         buyOrders = new HashMap<>();
@@ -24,6 +25,7 @@ public class Market implements Runnable {
             buyOrders.put(product, new TreeSet<>(buyOrderComparator));
         }
         buyOrders.get(product).add(order);
+        this.newOrders = true;
         this.notify();
     }
 
@@ -34,25 +36,47 @@ public class Market implements Runnable {
             sellOrders.put(product, new TreeSet<>(sellOrderComparator));
         }
         sellOrders.get(product).add(order);
+        this.newOrders = true;
         this.notify();
     }
 
 
     @Override
     public void run() {
-        while (!Main.finished) {
+        // Wait until the game starts
+        try {
+            Synchronizer.gameStarted.await();
+        } catch (InterruptedException e) {
+            System.out.println("Market didn't open");
+            throw new RuntimeException(e);
+        }
+
+        // Play the game
+        while (!(Synchronizer.gameFinished())) {
             synchronized (this) {
                 try {
                     // wait for a new order to be added
-                    wait();
+                    System.out.println("waiting for orders");
+                    wait(100);
                 } catch (InterruptedException e) {
+                    System.out.println("Market crashed");
                     e.printStackTrace();
                 }
             }
 
-            // Match the orders
-            matchOrders();
+            if (gotNewOrders()){
+                // Match the orders
+                System.out.println("got new orders to match");
+                matchOrders();
+            }
+            else {
+                Synchronizer.finishTheRound();
+            }
         }
+    }
+
+    private boolean gotNewOrders() {
+        return newOrders;
     }
 
     private void matchOrders() {
@@ -68,8 +92,8 @@ public class Market implements Runnable {
                 BuyOrder buyOrder = buySet.first();
                 SellOrder sellOrder = sellSet.first();
                 int quantity = Math.min(buyOrder.getQuantity(), sellOrder.getQuantity());
-                buyOrder.execute(quantity);
-                sellOrder.execute(quantity);
+                buyOrder.execute(sellOrder.issuer, quantity);
+                sellOrder.execute(buyOrder.issuer, quantity);
                 if (buyOrder.isComplete()) {
                     buySet.remove(buyOrder);
                 }

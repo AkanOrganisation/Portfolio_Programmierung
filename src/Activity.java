@@ -20,7 +20,7 @@ public class Activity implements Buy, Sell, Build, Consume {
     }
 
     public void execute() throws InterruptedException {
-        int quantity = new Random().nextInt(maxQuantity - minQuantity + 1) + minQuantity;
+        int quantity = new Random().nextInt(maxQuantity - minQuantity ) + minQuantity;
         switch (type) {
             case BUY:
                 buy(player, product, quantity);
