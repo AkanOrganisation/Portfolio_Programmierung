@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Main {
     static int maxRounds = 200;
@@ -43,13 +44,15 @@ public class Main {
 
             // Wait for all players to finish their turn
             Synchronizer.allPlayersFinishedRound.await();
-
-            // clear the market
+            // Clear the market
             //Market.getInstance().clearOrders();
 
+            // Print round's log
+            Log.getInstance().printMessagesForRound(currentRound);
+
             // All players finished their turn, end the round
+            Log.getInstance().setRound(currentRound++);
             Synchronizer.newRound.await();
-            currentRound++;
         }
 
         // notify all that the game is finished

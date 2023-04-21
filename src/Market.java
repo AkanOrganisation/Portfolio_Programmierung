@@ -30,10 +30,6 @@ public class Market implements Runnable {
         this.notify();
     }
 
-    private synchronized void setNewOrders(boolean b) {
-        newOrders = b;
-    }
-
     public synchronized void addSellOrder(SellOrder order) {
         CatalogProduct product = order.getItem();
         if (!sellOrders.containsKey(product)) {
@@ -45,6 +41,14 @@ public class Market implements Runnable {
         this.notify();
     }
 
+    private synchronized void setNewOrders(boolean b) {
+        newOrders = b;
+    }
+
+
+    private boolean gotNewOrders() {
+        return newOrders;
+    }
 
     @Override
     public void run() {
@@ -52,7 +56,7 @@ public class Market implements Runnable {
         try {
             Synchronizer.gameStarted.await();
         } catch (InterruptedException e) {
-            System.out.println("Market didn't open");
+            Log.getInstance().addMessage("Market didn't open");
             throw new RuntimeException(e);
         }
 
@@ -61,10 +65,10 @@ public class Market implements Runnable {
             synchronized (this) {
                 try {
                     // wait for a new order to be added
-                    System.out.println("waiting for orders");
+                    Log.getInstance().addMessage("waiting for orders");
                     wait(1000);
                 } catch (InterruptedException e) {
-                    System.out.println("Market crashed");
+                    Log.getInstance().addMessage("Market crashed");
                     e.printStackTrace();
                 }
             }
@@ -72,17 +76,13 @@ public class Market implements Runnable {
             if (gotNewOrders()){
                 setNewOrders(false);
                 // Match the orders
-                System.out.println("got new orders to match");
+                Log.getInstance().addMessage("got new orders to match");
                 matchOrders();
             }
             else {
                 Synchronizer.finishTheRound();
             }
         }
-    }
-
-    private boolean gotNewOrders() {
-        return newOrders;
     }
 
     private void matchOrders() {

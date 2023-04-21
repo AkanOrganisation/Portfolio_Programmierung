@@ -38,11 +38,12 @@ public class Player implements Runnable {
     }
 
     public void prioritizeActivities() {
+        //TODO:
         // Implementation to be defined
     }
 
     public void log(String message) {
-        // Implementation to be defined
+        Log.getInstance().addMessage(message);
     }
 
     private void notifyRoundFinished() {
@@ -57,7 +58,7 @@ public class Player implements Runnable {
         try {
             Synchronizer.gameStarted.await();
         } catch (InterruptedException e) {
-            System.out.println("Player left before the game started");
+            log("Player %s left before the game started".formatted(this.name));
             throw new RuntimeException(e);
         }
 
@@ -68,15 +69,15 @@ public class Player implements Runnable {
                 Synchronizer.newRound.await();
 
                 // Play the round
-                System.out.println("Player %s starting a new round".formatted(this.name));
+                log("Player %s starting a new round".formatted(this.name));
                 playRound();
 
                 // Mark turn as finished
                 notifyRoundFinished();
-                System.out.println("Player %s finished the round".formatted(this.name));
+                log("Player %s finished the round".formatted(this.name));
 
             } catch (InterruptedException e) {
-                System.out.println("Player left before the game finished");
+                log("Player %s left before the game finished".formatted(this.name));
                 throw new RuntimeException(e);
             }
         }

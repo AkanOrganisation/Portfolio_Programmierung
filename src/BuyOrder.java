@@ -15,7 +15,7 @@ public class BuyOrder extends Order {
         issuer.stock.addProducts(getItem(), boughtQuantity);
         issuer.money -= totalPrice;
         this.quantity -= boughtQuantity;
-        System.out.println(issuer.name + " bought " + boughtQuantity + " units of " + getItem().name + " for " + totalPrice + " from " + partner.type + " " + partner.name);
+        Log.getInstance().addMessage(issuer.name + " bought " + boughtQuantity + " units of " + getItem().name + " for " + totalPrice + " from " + partner.type + " " + partner.name);
         // Check if the order is complete
         if (this.quantity == 0) {
             finish();

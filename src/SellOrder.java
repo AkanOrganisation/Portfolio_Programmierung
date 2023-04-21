@@ -15,7 +15,7 @@ public class SellOrder extends Order {
         issuer.stock.removeProducts(getItem(), soldQuantity);
         issuer.money += totalPrice;
         this.quantity -= soldQuantity;
-        System.out.println(issuer.name + " Sold " + soldQuantity + " units of " + getItem().name + " for " + totalPrice + " to " + partner.type + " " + partner.name);
+        Log.getInstance().addMessage(issuer.name + " Sold " + soldQuantity + " units of " + getItem().name + " for " + totalPrice + " to " + partner.type + " " + partner.name);
 
         // Check if the order is complete
         if (this.quantity == 0) {
