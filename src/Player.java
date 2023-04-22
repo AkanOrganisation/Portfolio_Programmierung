@@ -46,17 +46,14 @@ public class Player implements Runnable {
         Log.getInstance().addMessage(message);
     }
 
-    private void notifyRoundFinished() {
-        Synchronizer.allPlayersFinishedRound.countDown();
-    }
     @Override
     public void run() {
-        // notify loaded
-        Synchronizer.allPlayersLoaded.countDown();
+        // Notify the player is loaded
+        Synchronizer.playerLoaded();
 
         // Wait until the game starts
         try {
-            Synchronizer.gameStarted.await();
+            Synchronizer.waitGameStart();
         } catch (InterruptedException e) {
             log("Player %s left before the game started".formatted(this.name));
             throw new RuntimeException(e);
@@ -66,15 +63,22 @@ public class Player implements Runnable {
         while (!Synchronizer.gameFinished()) {
             try {
                 // Wait for a new round
-                Synchronizer.newRound.await();
+                while(!Synchronizer.roundStarted()){
+                    Synchronizer.waitRoundStarted();
+                }
 
                 // Play the round
                 log("Player %s starting a new round".formatted(this.name));
                 playRound();
 
                 // Mark turn as finished
-                notifyRoundFinished();
+                Synchronizer.notifyPlayerFinishedRound();
                 log("Player %s finished the round".formatted(this.name));
+
+
+                while (!Synchronizer.roundFinished()){
+                    Synchronizer.waitRoundFinished();
+                }
 
             } catch (InterruptedException e) {
                 log("Player %s left before the game finished".formatted(this.name));

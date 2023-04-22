@@ -1,130 +1,211 @@
- [
-    {
-      "id": 1,
-      "name": "Wood",
-      "recommendedPrice": 10.0,
-      "components": []
-    },
-    {
-      "id": 2,
-      "name": "Metal",
-      "recommendedPrice": 20.0,
-      "components": []
-    },
-    {
-      "id": 3,
-      "name": "Circuit Board",
-      "recommendedPrice": 30.0,
-      "components": []
-    },
-    {
-      "id": 4,
-      "name": "Chair",
-      "recommendedPrice": 100.0,
-      "components": [
-        {
-          "id": 1,
-          "quantity": 4
-        },
-        {
-          "id": 2,
-          "quantity": 2
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "name": "Table",
-      "recommendedPrice": 200.0,
-      "components": [
-        {
-          "id": 1,
-          "quantity": 6
-        },
-        {
-          "id": 2,
-          "quantity": 4
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "name": "Bed",
-      "recommendedPrice": 300.0,
-      "components": [
-        {
-          "id": 1,
-          "quantity": 8
-        },
-        {
-          "id": 2,
-          "quantity": 6
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "name": "Computer Desk",
-      "recommendedPrice": 150.0,
-      "components": [
-        {
-          "id": 1,
-          "quantity": 2
-        },
-        {
-          "id": 2,
-          "quantity": 4
-        },
-        {
-          "id": 3,
-          "quantity": 1
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "name": "Bookshelf",
-      "recommendedPrice": 80.0,
-      "components": [
-        {
-          "id": 1,
-          "quantity": 4
-        },
-        {
-          "id": 2,
-          "quantity": 2
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "name": "Lamp",
-      "recommendedPrice": 50.0,
-      "components": [
-        {
-          "id": 2,
-          "quantity": 1
-        },
-        {
-          "id": 3,
-          "quantity": 2
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "name": "Coffee Table",
-      "recommendedPrice": 120.0,
-      "components": [
-        {
-          "id": 1,
-          "quantity": 4
-        },
-        {
-          "id": 2,
-          "quantity": 2
-        }
-      ]
-    }
-  ]
-
+[
+  {
+    "id": 1,
+    "name": "Wood",
+    "recommendedPrice": 10.0,
+    "components": []
+  },
+  {
+    "id": 2,
+    "name": "Metal",
+    "recommendedPrice": 20.0,
+    "components": []
+  },
+  {
+    "id": 3,
+    "name": "Circuit Board",
+    "recommendedPrice": 30.0,
+    "components": []
+  },
+  {
+    "id": 4,
+    "name": "Chair",
+    "recommendedPrice": 100.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 4
+      },
+      {
+        "id": 2,
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Table",
+    "recommendedPrice": 200.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 6
+      },
+      {
+        "id": 2,
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Bed",
+    "recommendedPrice": 300.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 8
+      },
+      {
+        "id": 2,
+        "quantity": 6
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Computer Desk",
+    "recommendedPrice": 150.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 2
+      },
+      {
+        "id": 2,
+        "quantity": 4
+      },
+      {
+        "id": 3,
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Bookshelf",
+    "recommendedPrice": 80.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 4
+      },
+      {
+        "id": 2,
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Lamp",
+    "recommendedPrice": 50.0,
+    "components": [
+      {
+        "id": 2,
+        "quantity": 1
+      },
+      {
+        "id": 3,
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Coffee Table",
+    "recommendedPrice": 120.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 4
+      },
+      {
+        "id": 2,
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Sofa",
+    "recommendedPrice": 250.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 10
+      },
+      {
+        "id": 2,
+        "quantity": 4
+      },
+      {
+        "id": 12,
+        "quantity": 5
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Fabric",
+    "recommendedPrice": 5.0,
+    "components": []
+  },
+  {
+    "id": 13,
+    "name": "TV Stand",
+    "recommendedPrice": 160.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 4
+      },
+      {
+        "id": 2,
+        "quantity": 4
+      },
+      {
+        "id": 3,
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Wardrobe",
+    "recommendedPrice": 400.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 12
+      },
+      {
+        "id": 2,
+        "quantity": 6
+      },
+      {
+        "id": 3,
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Kitchen Cabinet",
+    "recommendedPrice": 350.0,
+    "components": [
+      {
+        "id": 1,
+        "quantity": 10
+      },
+      {
+        "id": 2,
+        "quantity": 5
+      },
+      {
+        "id": 3,
+        "quantity": 1
+      }
+    ]
+  }
+]

@@ -11,7 +11,7 @@ interface Buy {
     }
 
     default BuyOrder waitForBuyOrder(BuyOrder order) throws InterruptedException {
-        order.latch.await(1000, TimeUnit.MILLISECONDS);
+        order.latch.await(100, TimeUnit.MILLISECONDS);
         return order;
     }
 }

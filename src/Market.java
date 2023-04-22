@@ -25,7 +25,6 @@ public class Market implements Runnable {
             buyOrders.put(product, new TreeSet<>(buyOrderComparator));
         }
         buyOrders.get(product).add(order);
-        this.newOrders = true;
         setNewOrders(true);
         this.notify();
     }
@@ -54,7 +53,7 @@ public class Market implements Runnable {
     public void run() {
         // Wait until the game starts
         try {
-            Synchronizer.gameStarted.await();
+            Synchronizer.waitGameStart();
         } catch (InterruptedException e) {
             Log.getInstance().addMessage("Market didn't open");
             throw new RuntimeException(e);
@@ -65,23 +64,23 @@ public class Market implements Runnable {
             synchronized (this) {
                 try {
                     // wait for a new order to be added
-                    Log.getInstance().addMessage("waiting for orders");
-                    wait(1000);
+                    //Log.getInstance().addMessage("waiting for orders");
+                    this.wait(500);
+                    if (gotNewOrders()){
+                        setNewOrders(false);
+                        // Match the orders
+                        //Log.getInstance().addMessage("got new orders to match");
+                        matchOrders();
+                    }
+                    else {
+                        Synchronizer.setMarketFinished();
+                    }
                 } catch (InterruptedException e) {
                     Log.getInstance().addMessage("Market crashed");
                     e.printStackTrace();
                 }
             }
 
-            if (gotNewOrders()){
-                setNewOrders(false);
-                // Match the orders
-                Log.getInstance().addMessage("got new orders to match");
-                matchOrders();
-            }
-            else {
-                Synchronizer.finishTheRound();
-            }
         }
     }
 

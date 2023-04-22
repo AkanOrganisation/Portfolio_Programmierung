@@ -27,7 +27,7 @@ public class CatalogProduct {
                           @JsonProperty("recommendedPrice") double recommendedPrice,
                           @JsonProperty("components") ArrayList<Component> components) {
         this.id = id;
-        this.name = name;
+        this.name = name.toLowerCase();
         this.recommendedPrice = recommendedPrice;
         this.components = components;
 
@@ -37,7 +37,7 @@ public class CatalogProduct {
 
 
     public static CatalogProduct getProductByName(String productName) {
-        return catalog.stream().filter(product -> product.name.equals(productName)).findFirst().orElse(null);
+        return catalog.stream().filter(product -> product.name.equals(productName.toLowerCase())).findFirst().orElse(null);
     }
 
     public static CatalogProduct getProductById(int id) {
