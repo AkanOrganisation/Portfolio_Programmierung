@@ -2,6 +2,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ class PlayerData implements Runnable {
     @JsonCreator
     PlayerData(@JsonProperty("name") String name,
                @JsonProperty("type") String type,
-               @JsonProperty("activities") ArrayList<ActivityData> activities){
+               @JsonProperty("activities") ArrayList<ActivityData> activities) {
         this.name = name;
         this.type = PlayerType.fromName(type);
         this.activities = activities;
@@ -58,15 +59,20 @@ class PlayerData implements Runnable {
     @Override
     public void run() {
         try {
-            Thread thread = new Thread(new Player(this.name, this.type, activities ), "PlayerThread: %s".formatted(this.name));
+            Thread thread = new Thread(new Player(this.name, this.type, activities), "PlayerThread: %s".formatted(this.name));
             thread.start();
             thread.join();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            if (!Synchronizer.gameFinished())
+                throw new RuntimeException(e);
         }
     }
 
+    public String getName() {
+        return name;
+    }
 }
+
 class ActivityData {
     ActivityType type;
     CatalogProduct product;
@@ -74,10 +80,10 @@ class ActivityData {
     int maxQuantity;
 
     @JsonCreator
-    ActivityData(@JsonProperty("type")String type,
+    ActivityData(@JsonProperty("type") String type,
                  @JsonProperty("product") String product,
                  @JsonProperty("min") int minQuantity,
-                 @JsonProperty("max") int maxQuantity ){
+                 @JsonProperty("max") int maxQuantity) {
         this.type = ActivityType.fromName(type);
         this.product = CatalogProduct.getProductByName(product);
         this.minQuantity = minQuantity;

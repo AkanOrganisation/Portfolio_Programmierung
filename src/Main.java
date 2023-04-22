@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main {
-    static int maxRounds = 200;
+    static int maxRounds = 5;
     static String catalogFilePath = "./src/Catalog.json";
     static String playersFilePath = "./src/players.json";
     static int currentRound = 0;
@@ -24,7 +24,7 @@ public class Main {
 
         // Start player threads
         for (PlayerData playerData : PlayerData.playersData) {
-            Thread playerDataThread = new Thread(playerData, "PlayerDataThread");
+            Thread playerDataThread = new Thread(playerData, "PlayerDataThread: " +playerData.getName());
             playerDataThread.start();
             threads.add(playerDataThread);
         }
@@ -63,8 +63,9 @@ public class Main {
         Synchronizer.setGameFinished();
 
         // Stop all threads
-        for(Thread thread: threads) thread.join();
+        for(Thread thread: threads) thread.interrupt();
         System.out.println("finished");
+        System.exit(0);
     }
 
 }

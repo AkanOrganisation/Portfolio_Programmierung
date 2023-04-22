@@ -66,18 +66,19 @@ public class Market implements Runnable {
                     // wait for a new order to be added
                     //Log.getInstance().addMessage("waiting for orders");
                     this.wait(100);
-                    if (gotNewOrders()){
+                    if (gotNewOrders()) {
                         setNewOrders(false);
                         // Match the orders
                         //Log.getInstance().addMessage("got new orders to match");
                         matchOrders();
-                    }
-                    else {
+                    } else {
                         Synchronizer.setMarketFinished();
                     }
                 } catch (InterruptedException e) {
-                    Log.getInstance().addMessage("Market crashed");
-                    e.printStackTrace();
+                    if (!Synchronizer.gameFinished()) {
+                        Log.getInstance().addMessage("Market crashed");
+                        e.printStackTrace();
+                    }
                 }
             }
 
