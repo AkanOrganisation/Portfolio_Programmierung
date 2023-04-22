@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
 
 public class Main {
     static int maxRounds = 200;
@@ -15,8 +14,8 @@ public class Main {
         PlayerData.playersData.addAll(Arrays.asList(PlayerData.loadFromFile(playersFilePath)));
 
         // set CountDown to the number of players
-        System.out.println("Numbers of players:" + PlayerData.playersData.size());
-        Synchronizer.allPlayersLoaded = new CountDownLatch(PlayerData.playersData.size());
+        System.out.println("Numbers of players:" + PlayerData.getNumberOfPlayers());
+        Synchronizer.setNumberOfPlayers(PlayerData.getNumberOfPlayers());
 
         // Start market thread
         Thread marketThread = new Thread(Market.getInstance(), "MarketThread");
@@ -32,7 +31,7 @@ public class Main {
 
         // Wait all players loaded
         System.out.println("Waiting for all players to load");
-        Synchronizer.allPlayersLoaded.await();
+        Synchronizer.waitAllPlayersLoad();
         System.out.println("All players loaded");
 
         // Loop through rounds
@@ -40,7 +39,7 @@ public class Main {
             System.out.println("Round " + (currentRound + 1) + " started");
 
             // Notify all players that a new round has started
-            Synchronizer.setRoundStarted(Player.players.size());
+            Synchronizer.setRoundStarted(Player.getNumberOfPlayers());
 
             // Wait for all players to finish their turn
             Synchronizer.waitForPlayers();

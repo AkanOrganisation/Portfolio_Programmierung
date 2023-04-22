@@ -51,6 +51,10 @@ class PlayerData implements Runnable {
         return new PlayerData[0];
     }
 
+    public static int getNumberOfPlayers() {
+        return playersData.size();
+    }
+
     @Override
     public void run() {
         try {

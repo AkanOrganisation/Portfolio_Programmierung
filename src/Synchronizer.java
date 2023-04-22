@@ -1,7 +1,7 @@
 import java.util.concurrent.CountDownLatch;
 
 public class Synchronizer {
-    static CountDownLatch allPlayersLoaded;
+    private static CountDownLatch allPlayersLoaded;
     private static final CountDownLatch gameStarted = new CountDownLatch(1);
     private static final CountDownLatch gameFinished = new CountDownLatch(1);
     private static CountDownLatch roundStarted = new CountDownLatch(1);
@@ -31,7 +31,7 @@ public class Synchronizer {
 
 
     public static void setRoundStarted(int numberOfPlayers) {
-        // Reset counters
+        // Reset sync latches
         playersFinishedRound = new CountDownLatch(numberOfPlayers);
         marketFinishedRound = new CountDownLatch(1);
         roundFinished = new CountDownLatch(1);
@@ -67,24 +67,30 @@ public class Synchronizer {
     }
 
     public static void waitForPlayers() throws InterruptedException {
-        while (!(playersFinishedRound.getCount() == 0))
-            playersFinishedRound.await();
+        playersFinishedRound.await();
     }
 
     public static void waitForMarket() throws InterruptedException {
-        while (!(marketFinishedRound.getCount() == 0))
-            marketFinishedRound.await();
+        marketFinishedRound.await();
     }
 
     public static void setMarketFinished() {
         marketFinishedRound.countDown();
     }
 
-    public static void playerLoaded() {
+    public static void notifyPlayerLoaded() {
         allPlayersLoaded.countDown();
     }
 
     static void notifyPlayerFinishedRound() {
         playersFinishedRound.countDown();
+    }
+
+    public static void waitAllPlayersLoad() throws InterruptedException {
+        allPlayersLoaded.await();
+    }
+
+    public static void setNumberOfPlayers(int size) {
+        allPlayersLoaded = new CountDownLatch(size);
     }
 }

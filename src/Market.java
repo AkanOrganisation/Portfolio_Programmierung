@@ -65,7 +65,7 @@ public class Market implements Runnable {
                 try {
                     // wait for a new order to be added
                     //Log.getInstance().addMessage("waiting for orders");
-                    this.wait(500);
+                    this.wait(100);
                     if (gotNewOrders()){
                         setNewOrders(false);
                         // Match the orders

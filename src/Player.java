@@ -23,6 +23,10 @@ public class Player implements Runnable {
         addToList(this);
     }
 
+    public static int getNumberOfPlayers() {
+        return players.size();
+    }
+
 
     private synchronized int getNextId() {
         return nextId++;
@@ -49,7 +53,7 @@ public class Player implements Runnable {
     @Override
     public void run() {
         // Notify the player is loaded
-        Synchronizer.playerLoaded();
+        Synchronizer.notifyPlayerLoaded();
 
         // Wait until the game starts
         try {
@@ -82,6 +86,7 @@ public class Player implements Runnable {
 
             } catch (InterruptedException e) {
                 log("Player %s left before the game finished".formatted(this.name));
+                players.remove(this);
                 throw new RuntimeException(e);
             }
         }
