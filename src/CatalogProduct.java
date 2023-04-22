@@ -44,14 +44,6 @@ public class CatalogProduct {
         return catalog.stream().filter(product -> product.id == id).findFirst().orElse(null);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public double getRecommendedPrice() {
-        return recommendedPrice;
-    }
-
     public List<Component> getComponents() {
         return this.components;
     }

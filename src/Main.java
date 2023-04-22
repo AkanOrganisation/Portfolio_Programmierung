@@ -25,7 +25,7 @@ public class Main {
 
         // Start player threads
         for (PlayerData playerData : PlayerData.playersData) {
-            Thread playerDataThread = new Thread(playerData);
+            Thread playerDataThread = new Thread(playerData, "PlayerDataThread");
             playerDataThread.start();
             threads.add(playerDataThread);
         }

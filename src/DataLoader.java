@@ -9,13 +9,11 @@ import java.util.ArrayList;
 
 class CatalogProductData {
 
+    // Read JSON data from file
     public static CatalogProduct[] loadFromFile(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         try {
-            // Read JSON data from file
-            CatalogProduct[] catalogProducts = mapper.readValue(new File(filePath), CatalogProduct[].class);
-            return catalogProducts;
+            return mapper.readValue(new File(filePath), CatalogProduct[].class);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -28,9 +26,9 @@ class PlayerData implements Runnable {
 
     static ArrayList<PlayerData> playersData = new ArrayList<>();
 
-    String name;
-    PlayerType type;
-    ArrayList<ActivityData> activities;
+    private final String name;
+    private final PlayerType type;
+    private final ArrayList<ActivityData> activities;
 
     @JsonCreator
     PlayerData(@JsonProperty("name") String name,
@@ -41,13 +39,12 @@ class PlayerData implements Runnable {
         this.activities = activities;
     }
 
+    // Read JSON data from file
     public static PlayerData[] loadFromFile(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         try {
-            // Read JSON data from file
-            PlayerData[] playersData = mapper.readValue(new File(filePath), PlayerData[].class);
-            return playersData;
+            return mapper.readValue(new File(filePath), PlayerData[].class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,24 +54,12 @@ class PlayerData implements Runnable {
     @Override
     public void run() {
         try {
-            Thread thread = new Thread(new Player(this.name, this.type, activities ), name+"Thread");
+            Thread thread = new Thread(new Player(this.name, this.type, activities ), "PlayerThread: %s".formatted(this.name));
             thread.start();
             thread.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    String getName(){
-        return this.name;
-    }
-
-    PlayerType getType(){
-        return this.type;
-    }
-
-    ArrayList<ActivityData> getActivities(){
-        return this.activities;
     }
 
 }

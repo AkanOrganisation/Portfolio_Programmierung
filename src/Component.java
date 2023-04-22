@@ -6,12 +6,6 @@ public class Component {
     CatalogProduct product;
     int quantity;
 
-    Component(CatalogProduct product, int quantity) {
-        this.id = product.id;
-        this.product = product;
-        this.quantity = quantity;
-    }
-
     @JsonCreator
     Component(@JsonProperty("id") int id, @JsonProperty("quantity") int quantity) {
         this.id = id;
