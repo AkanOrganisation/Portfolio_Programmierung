@@ -31,6 +31,7 @@ public class Synchronizer {
 
 
     public static void setRoundStarted(int numberOfPlayers) {
+        // Prepare new round
         // Reset sync latches
         playersFinishedRound = new CountDownLatch(numberOfPlayers);
         marketFinishedRound = new CountDownLatch(1);
@@ -49,21 +50,14 @@ public class Synchronizer {
         roundStarted.await();
     }
 
-    public static boolean roundStarted() {
-        return roundStarted.getCount() == 0;
-    }
-
-    public static void setRoundFinished() {
+    public static void setRoundFinished() throws InterruptedException {
         roundStarted = new CountDownLatch(1);
         roundFinished.countDown();
+        Thread.sleep(10);
     }
 
     public static void waitRoundFinished() throws InterruptedException {
         roundFinished.await();
-    }
-
-    public static boolean roundFinished() {
-        return roundFinished.getCount() == 0;
     }
 
     public static void waitForPlayers() throws InterruptedException {

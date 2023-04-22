@@ -54,7 +54,7 @@ public class Main {
             Log.getInstance().printMessagesForRound(currentRound);
 
             // All players finished their turn, end the round
-            Log.getInstance().setRound(currentRound++);
+            Log.getInstance().setRound(++currentRound);
             Synchronizer.setRoundFinished();
         }
 

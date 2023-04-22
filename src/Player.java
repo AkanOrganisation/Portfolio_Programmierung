@@ -16,7 +16,7 @@ public class Player implements Runnable {
         this.id = getNextId();
         this.name = name;
         this.type = type;
-        this.activities = activities.stream().map(activityData -> new Activity(this, activityData.type, activityData.product, activityData.minQuantity, activityData.maxQuantity )).collect(Collectors.toCollection(ArrayList::new));
+        this.activities = activities.stream().map(activityData -> new Activity(this, activityData.type, activityData.product, activityData.minQuantity, activityData.maxQuantity)).collect(Collectors.toCollection(ArrayList::new));
         this.stock = new Stock();
 
         //add a reference to self
@@ -38,7 +38,7 @@ public class Player implements Runnable {
 
     public void playRound() throws InterruptedException {
         prioritizeActivities();
-        for(Activity activity : activities)activity.execute();
+        for (Activity activity : activities) activity.execute();
     }
 
     public void prioritizeActivities() {
@@ -67,9 +67,7 @@ public class Player implements Runnable {
         while (!Synchronizer.gameFinished()) {
             try {
                 // Wait for a new round
-                while(!Synchronizer.roundStarted()){
-                    Synchronizer.waitRoundStarted();
-                }
+                Synchronizer.waitRoundStarted();
 
                 // Play the round
                 log("Player %s starting a new round".formatted(this.name));
@@ -79,10 +77,9 @@ public class Player implements Runnable {
                 Synchronizer.notifyPlayerFinishedRound();
                 log("Player %s finished the round".formatted(this.name));
 
+                // Wait for round's end
+                Synchronizer.waitRoundFinished();
 
-                while (!Synchronizer.roundFinished()){
-                    Synchronizer.waitRoundFinished();
-                }
 
             } catch (InterruptedException e) {
                 log("Player %s left before the game finished".formatted(this.name));
