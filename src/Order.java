@@ -2,8 +2,8 @@ import java.util.concurrent.CountDownLatch;
 
 public abstract class Order {
     public Player issuer;
-    public CountDownLatch latch;
-    private CatalogProduct item;
+    public CountDownLatch completed;
+    private final CatalogProduct item;
     public int quantity;
     public double priceUnit;
 
@@ -12,7 +12,7 @@ public abstract class Order {
         this.item = item;
         this.quantity = quantity;
         this.priceUnit = calculatePrice();
-        this.latch = new CountDownLatch(1);
+        this.completed = new CountDownLatch(1);
     }
 
     private double calculatePrice() {
@@ -25,7 +25,7 @@ public abstract class Order {
     public abstract void execute(Player partner ,int quantity);
 
     void finish(){
-        this.latch.countDown();
+        this.completed.countDown();
     }
 
     public CatalogProduct getItem() {

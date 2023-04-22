@@ -6,8 +6,7 @@ import java.util.Collections;
 
 public class Log {
 
-    private static Log instance;
-    private Map<Integer, List<String>> roundToMessagesMap;
+    private final Map<Integer, List<String>> roundToMessagesMap;
     private int currentRound;
 
     // Private constructor to prevent instantiation
@@ -16,16 +15,13 @@ public class Log {
         currentRound = 0;
     }
 
+    private static final class InstanceHolder {
+        private static final Log instance = new Log();
+    }
+
     // Static method to get the singleton instance
     public static Log getInstance() {
-        if (instance == null) {
-            synchronized (Log.class) {
-                if (instance == null) {
-                    instance = new Log();
-                }
-            }
-        }
-        return instance;
+        return InstanceHolder.instance;
     }
 
     // Set the current round

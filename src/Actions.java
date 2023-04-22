@@ -6,12 +6,11 @@ import java.util.concurrent.TimeUnit;
 
 interface Buy {
     default BuyOrder buy(Player player, CatalogProduct product, int quantity) {
-        BuyOrder order = new BuyOrder(player, product, quantity);
-        return order;
+        return new BuyOrder(player, product, quantity);
     }
 
     default BuyOrder waitForBuyOrder(BuyOrder order) throws InterruptedException {
-        order.latch.await(100, TimeUnit.MILLISECONDS);
+        order.completed.await(100, TimeUnit.MILLISECONDS);
         return order;
     }
 }

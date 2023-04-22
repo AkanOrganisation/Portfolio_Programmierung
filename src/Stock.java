@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 public class Stock {
-    private Map<CatalogProduct, List<Product>> stock = new HashMap<>();
+    private final Map<CatalogProduct, List<Product>> stock = new HashMap<>();
 
     public void removeProducts(CatalogProduct catalogProduct, int quantity) {
         if (stock.containsKey(catalogProduct)) {
             List<Product> products = stock.get(catalogProduct);
             quantity = Math.min(products.size(), quantity);
-            for (int i = 0; i < quantity; i++) {
-                products.remove(0);
+            if (quantity > 0) {
+                products.subList(0, quantity).clear();
             }
         }
     }
