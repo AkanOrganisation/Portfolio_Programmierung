@@ -10,8 +10,8 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         // Load catalog and players from file
-        CatalogProduct.catalog.addAll(Arrays.asList(CatalogProductData.loadFromFile(catalogFilePath)));
-        PlayerData.playersData.addAll(Arrays.asList(PlayerData.loadFromFile(playersFilePath)));
+        CatalogProduct.catalog.addAll(Arrays.asList(CatalogProductData.loadFromJsonFile(catalogFilePath)));
+        PlayerData.playersData.addAll(Arrays.asList(PlayerData.loadFromJsonFile(playersFilePath)));
 
         // set CountDown to the number of players
         System.out.println("Numbers of players:" + PlayerData.getNumberOfPlayers());

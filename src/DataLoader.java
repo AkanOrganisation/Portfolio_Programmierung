@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -11,15 +10,15 @@ import java.util.ArrayList;
 class CatalogProductData {
 
     // Read JSON data from file
-    public static CatalogProduct[] loadFromFile(String filePath) {
+    public static CatalogProduct[] loadFromJsonFile(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(new File(filePath), CatalogProduct[].class);
 
         } catch (IOException e) {
             e.printStackTrace();
+            return new CatalogProduct[0];
         }
-        return new CatalogProduct[0];
     }
 }
 
@@ -41,15 +40,14 @@ class PlayerData implements Runnable {
     }
 
     // Read JSON data from file
-    public static PlayerData[] loadFromFile(String filePath) {
+    public static PlayerData[] loadFromJsonFile(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         try {
             return mapper.readValue(new File(filePath), PlayerData[].class);
         } catch (IOException e) {
             e.printStackTrace();
+            return new PlayerData[0];
         }
-        return new PlayerData[0];
     }
 
     public static int getNumberOfPlayers() {
