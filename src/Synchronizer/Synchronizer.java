@@ -1,3 +1,5 @@
+package Synchronizer;
+
 import java.util.concurrent.CountDownLatch;
 
 public class Synchronizer {
@@ -76,7 +78,7 @@ public class Synchronizer {
         allPlayersLoaded.countDown();
     }
 
-    static void notifyPlayerFinishedRound() {
+    public static void notifyPlayerFinishedRound() {
         playersFinishedRound.countDown();
     }
 

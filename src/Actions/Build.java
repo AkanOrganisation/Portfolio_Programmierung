@@ -1,35 +1,17 @@
+package Actions;
+
+import Catalog.CatalogProduct;
+import Catalog.Component;
+import Order.BuyOrder;
+import Player.Player;
+import Player.PlayerType;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-interface Buy {
-    default BuyOrder buy(Player player, CatalogProduct product, int quantity) {
-        return new BuyOrder(player, product, quantity);
-    }
-
-    default BuyOrder waitForBuyOrder(BuyOrder order) throws InterruptedException {
-        order.completed.await(100, TimeUnit.MILLISECONDS);
-        return order;
-    }
-}
-
-interface Consume extends Buy {
-    default void consume(Player player, CatalogProduct product, int quantity) throws InterruptedException {
-        List<Product> products = player.stock.getProducts(product);
-        int availableQuantity = products.size();
-
-        if (!(availableQuantity >= quantity)) {
-            // Not enough stock, buy more and then consume
-            waitForBuyOrder(buy(player, product, quantity - availableQuantity));
-        }
-
-        player.stock.removeProducts(product, quantity);
-    }
-}
-
-interface Build extends Buy {
+public interface Build extends Buy {
     default void build(Player player, CatalogProduct product, int quantity) throws InterruptedException {
         if (player.type == PlayerType.SUPPLIER) {
             player.stock.addProducts(product, quantity);
@@ -86,27 +68,5 @@ interface Build extends Buy {
             player.stock.removeProducts(material, requiredQuantity * maxQuantity);
         }
         player.stock.addProducts(product, maxQuantity);
-    }
-}
-
-interface Sell extends Build {
-    default void sell(Player player, CatalogProduct product, int quantity) throws InterruptedException {
-        List<Product> products = player.stock.getProducts(product);
-        int availableQuantity = products.size();
-
-        if (!(availableQuantity >= quantity)) {
-            // Not enough products in stock, try to build
-            int quantityToBuild = quantity - availableQuantity;
-            build(player, product, quantityToBuild);
-
-            // Get the updated quantity of available products
-            products = player.stock.getProducts(product);
-            availableQuantity = products.size();
-
-        }
-        // Sell the requested quantity of products or all the available products, whichever is smaller
-        int quantityToSell = Math.min(quantity, availableQuantity);
-        if (quantityToSell > 0)
-            new SellOrder(player, product, quantityToSell);
     }
 }

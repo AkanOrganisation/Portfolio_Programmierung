@@ -1,7 +1,14 @@
+package Market;
+
+import Catalog.CatalogProduct;
+import Log.Log;
+import Order.BuyOrder;
+import Order.SellOrder;
+import Synchronizer.Synchronizer;
+
 import java.util.*;
 
 public class Market implements Runnable {
-    private static Market instance = null;
     private final Map<CatalogProduct, SortedSet<BuyOrder>> buyOrders;
     private final Map<CatalogProduct, SortedSet<SellOrder>> sellOrders;
     private boolean newOrders;
@@ -11,12 +18,14 @@ public class Market implements Runnable {
         sellOrders = new HashMap<>();
     }
 
-    public static Market getInstance() {
-        if (instance == null) {
-            instance = new Market();
-        }
-        return instance;
+    private static final class InstanceHolder {
+        private static final Market instance = new Market();
     }
+
+    public static Market getInstance() {
+        return InstanceHolder.instance;
+    }
+
 
     public synchronized void addBuyOrder(BuyOrder order) {
         CatalogProduct product = order.getItem();
@@ -64,12 +73,12 @@ public class Market implements Runnable {
             synchronized (this) {
                 try {
                     // wait for a new order to be added
-                    //Log.getInstance().addMessage("waiting for orders");
+                    //Log.Log.getInstance().addMessage("waiting for orders");
                     this.wait(100);
                     if (gotNewOrders()) {
                         setNewOrders(false);
                         // Match the orders
-                        //Log.getInstance().addMessage("got new orders to match");
+                        //Log.Log.getInstance().addMessage("got new orders to match");
                         matchOrders();
                     } else {
                         Synchronizer.setMarketFinished();
@@ -84,6 +93,7 @@ public class Market implements Runnable {
 
         }
     }
+
 
     private void matchOrders() {
         for (CatalogProduct product : CatalogProduct.catalog) {

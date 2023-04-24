@@ -1,3 +1,10 @@
+package Order;
+
+import Catalog.CatalogProduct;
+import Log.Log;
+import Market.Market;
+import Player.Player;
+
 public class SellOrder extends Order {
     public double minPricePerUnit;
 
@@ -15,7 +22,7 @@ public class SellOrder extends Order {
         issuer.stock.removeProducts(getItem(), soldQuantity);
         issuer.money += totalPrice;
         this.quantity -= soldQuantity;
-        Log.getInstance().addMessage(issuer.name + " Sold " + soldQuantity + " units of " + getItem().name + " for " + totalPrice + " to " + partner.type + " " + partner.name);
+        Log.getInstance().addMessage(issuer.getName() + " Sold " + soldQuantity + " units of " + getItem().name + " for " + totalPrice + " to " + partner.type + " " + partner.getName());
 
         // Check if the order is complete
         if (this.quantity == 0) {

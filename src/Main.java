@@ -1,3 +1,10 @@
+import Catalog.CatalogProduct;
+import Log.Log;
+import Market.Market;
+import Player.Player;
+import Player.PlayerController;
+import Synchronizer.Synchronizer;
+
 import java.util.ArrayList;
 
 public class Main {
@@ -43,11 +50,11 @@ public class Main {
             // Wait for all players to finish their turn
             Synchronizer.waitForPlayers();
 
-            //Wait for Market to finish this round
+            //Wait for Market.Market to finish this round
             Synchronizer.waitForMarket();
 
             // Clear the market
-            //Market.getInstance().clearOrders();
+            //Market.Market.getInstance().clearOrders();
 
             // Print round's log
             Log.getInstance().printMessagesForRound(currentRound);

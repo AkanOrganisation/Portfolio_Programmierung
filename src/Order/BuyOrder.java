@@ -1,3 +1,10 @@
+package Order;
+
+import Catalog.CatalogProduct;
+import Log.Log;
+import Market.Market;
+import Player.Player;
+
 public class BuyOrder extends Order {
     public double maxPricePerUnit;
 
@@ -15,7 +22,7 @@ public class BuyOrder extends Order {
         issuer.stock.addProducts(getItem(), boughtQuantity);
         issuer.money -= totalPrice;
         this.quantity -= boughtQuantity;
-        Log.getInstance().addMessage(issuer.name + " bought " + boughtQuantity + " units of " + getItem().name + " for " + totalPrice + " from " + partner.type + " " + partner.name);
+        Log.getInstance().addMessage(issuer.getName() + " bought " + boughtQuantity + " units of " + getItem().name + " for " + totalPrice + " from " + partner.type + " " + partner.getName());
         // Check if the order is complete
         if (this.quantity == 0) {
             finish();

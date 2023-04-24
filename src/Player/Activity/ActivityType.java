@@ -1,3 +1,5 @@
+package Player.Activity;
+
 public enum ActivityType {
     BUY,
     SELL,

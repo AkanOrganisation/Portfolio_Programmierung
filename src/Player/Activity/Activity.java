@@ -1,11 +1,21 @@
+package Player.Activity;
+
+import Actions.Build;
+import Actions.Buy;
+import Actions.Consume;
+import Actions.Sell;
+import Catalog.CatalogProduct;
+import Player.Player;
+
 import java.util.Random;
 
+
 public class Activity implements Buy, Sell, Build, Consume {
-    private Player player;
-    private ActivityType type;
-    private CatalogProduct product;
-    private int minQuantity;
-    private int maxQuantity;
+    private final Player player;
+    private final ActivityType type;
+    private final CatalogProduct product;
+    private final int minQuantity;
+    private final int maxQuantity;
     private boolean finished;
 
 
@@ -22,20 +32,11 @@ public class Activity implements Buy, Sell, Build, Consume {
     public void execute() throws InterruptedException {
         int quantity = new Random().nextInt(maxQuantity - minQuantity ) + minQuantity;
         switch (type) {
-            case BUY:
-                buy(player, product, quantity);
-                break;
-            case SELL:
-                sell(player, product, quantity);
-                break;
-            case BUILD:
-                build(player, product, quantity);
-                break;
-            case CONSUME:
-                consume(player, product, quantity);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid activity type: " + type);
+            case BUY -> buy(player, product, quantity);
+            case SELL -> sell(player, product, quantity);
+            case BUILD -> build(player, product, quantity);
+            case CONSUME -> consume(player, product, quantity);
+            default -> throw new IllegalArgumentException("Invalid activity type: " + type);
         }
         this.finished = true;
     }

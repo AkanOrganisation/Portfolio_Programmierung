@@ -1,3 +1,8 @@
+package Player;
+
+import Catalog.CatalogProduct;
+import Catalog.Product;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

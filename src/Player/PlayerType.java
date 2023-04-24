@@ -1,3 +1,5 @@
+package Player;
+
 public enum PlayerType {
     MANUFACTURER,
     CONSUMER,

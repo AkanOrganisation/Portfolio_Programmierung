@@ -1,3 +1,8 @@
+package Order;
+
+import Catalog.CatalogProduct;
+import Player.Player;
+
 import java.util.concurrent.CountDownLatch;
 
 public abstract class Order {

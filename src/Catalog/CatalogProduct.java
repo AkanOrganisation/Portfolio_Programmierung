@@ -1,3 +1,5 @@
+package Catalog;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +11,7 @@ import java.util.List;
 
 public class CatalogProduct {
     // Static attribute to store all created instances
-    public static ArrayList<CatalogProduct> catalog = new ArrayList<CatalogProduct>();
+    public static ArrayList<CatalogProduct> catalog = new ArrayList<>();
     public int id;
 
     // Instance attributes
@@ -18,7 +20,7 @@ public class CatalogProduct {
     public ArrayList<Component> components;
 
     /**
-     * Constructor for CatalogProduct class.
+     * Constructor for Catalog.CatalogProduct class.
      *
      * @param name the name of the product
      * @param recommendedPrice the recommended price of the product
@@ -58,9 +60,6 @@ public class CatalogProduct {
         return catalog.stream().filter(product -> product.id == id).findFirst().orElse(null);
     }
 
-    public static void addAllToCatalog(CatalogProduct[] catalogProducts) {
-        catalog.addAll(List.of(catalogProducts));
-    }
 
     public List<Component> getComponents() {
         return this.components;
