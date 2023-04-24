@@ -1,5 +1,3 @@
-package Catalog;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,16 +9,16 @@ import java.util.List;
 
 public class CatalogProduct {
     // Static attribute to store all created instances
-    public static ArrayList<CatalogProduct> catalog = new ArrayList<>();
-    public int id;
+    private static final ArrayList<CatalogProduct> catalog = new ArrayList<>();
+    private final int id;
 
     // Instance attributes
-    public String name;
-    public double recommendedPrice;
-    public ArrayList<Component> components;
+    private final String name;
+    private double recommendedPrice;
+    private final ArrayList<Component> components;
 
     /**
-     * Constructor for Catalog.CatalogProduct class.
+     * Constructor for CatalogProduct class.
      *
      * @param name the name of the product
      * @param recommendedPrice the recommended price of the product
@@ -40,14 +38,13 @@ public class CatalogProduct {
         catalog.add(this);
     }
 
-    public static CatalogProduct[] loadFromJsonFile(String filePath) {
+    public static void loadFromJsonFile(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(new File(filePath), CatalogProduct[].class);
+            mapper.readValue(new File(filePath), CatalogProduct[].class);
 
         } catch (IOException e) {
             e.printStackTrace();
-            return new CatalogProduct[0];
         }
     }
 
@@ -60,8 +57,54 @@ public class CatalogProduct {
         return catalog.stream().filter(product -> product.id == id).findFirst().orElse(null);
     }
 
+    public static ArrayList<CatalogProduct> getCatalog() {
+        return catalog;
+    }
+
 
     public List<Component> getComponents() {
         return this.components;
+    }
+
+    public double getRecommendedPrice() {
+        return recommendedPrice;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static class Component {
+        int id;
+        CatalogProduct product;
+        int quantity;
+
+        @JsonCreator
+        Component(@JsonProperty("id") int id, @JsonProperty("quantity") int quantity) {
+            this.id = id;
+            this.product = getProductById(id);
+            this.quantity = quantity;
+        }
+
+        public CatalogProduct getProduct() {
+            return this.product;
+        }
+
+        public int getQuantity() {
+            return this.quantity;
+        }
+
+
+    }
+
+    public static class Product {
+        private static int nextId = 1;
+
+        public int id;
+
+        public Product() {
+            this.id = nextId;
+            nextId++;
+        }
     }
 }

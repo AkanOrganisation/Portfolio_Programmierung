@@ -1,16 +1,8 @@
-package Market;
-
-import Catalog.CatalogProduct;
-import Log.Log;
-import Order.BuyOrder;
-import Order.SellOrder;
-import Synchronizer.Synchronizer;
-
 import java.util.*;
 
 public class Market implements Runnable {
-    private final Map<CatalogProduct, SortedSet<BuyOrder>> buyOrders;
-    private final Map<CatalogProduct, SortedSet<SellOrder>> sellOrders;
+    private final Map<CatalogProduct, SortedSet<Order>> buyOrders;
+    private final Map<CatalogProduct, SortedSet<Order>> sellOrders;
     private boolean newOrders;
 
     private Market() {
@@ -27,10 +19,10 @@ public class Market implements Runnable {
     }
 
 
-    public synchronized void addBuyOrder(BuyOrder order) {
-        CatalogProduct product = order.getItem();
+    public synchronized void addBuyOrder(Order order) {
+        CatalogProduct product = order.getProduct();
         if (!buyOrders.containsKey(product)) {
-            Comparator<BuyOrder> buyOrderComparator = Comparator.comparingDouble(BuyOrder::getMaxPricePerUnit).reversed();
+            Comparator<Order> buyOrderComparator = Comparator.comparingDouble(Order::getPriceUnit).reversed();
             buyOrders.put(product, new TreeSet<>(buyOrderComparator));
         }
         buyOrders.get(product).add(order);
@@ -38,10 +30,10 @@ public class Market implements Runnable {
         this.notify();
     }
 
-    public synchronized void addSellOrder(SellOrder order) {
-        CatalogProduct product = order.getItem();
+    public synchronized void addSellOrder(Order order) {
+        CatalogProduct product = order.getProduct();
         if (!sellOrders.containsKey(product)) {
-            Comparator<SellOrder> sellOrderComparator = Comparator.comparingDouble(SellOrder::getMinPricePerUnit);
+            Comparator<Order> sellOrderComparator = Comparator.comparingDouble(Order::getPriceUnit);
             sellOrders.put(product, new TreeSet<>(sellOrderComparator));
         }
         sellOrders.get(product).add(order);
@@ -73,12 +65,12 @@ public class Market implements Runnable {
             synchronized (this) {
                 try {
                     // wait for a new order to be added
-                    //Log.Log.getInstance().addMessage("waiting for orders");
+                    //Log.getInstance().addMessage("waiting for orders");
                     this.wait(100);
                     if (gotNewOrders()) {
                         setNewOrders(false);
                         // Match the orders
-                        //Log.Log.getInstance().addMessage("got new orders to match");
+                        //Log.getInstance().addMessage("got new orders to match");
                         matchOrders();
                     } else {
                         Synchronizer.setMarketFinished();
@@ -96,20 +88,20 @@ public class Market implements Runnable {
 
 
     private void matchOrders() {
-        for (CatalogProduct product : CatalogProduct.catalog) {
-            SortedSet<BuyOrder> buySet = buyOrders.get(product);
-            SortedSet<SellOrder> sellSet = sellOrders.get(product);
+        for (CatalogProduct product : CatalogProduct.getCatalog()) {
+            SortedSet<Order> buySet = buyOrders.get(product);
+            SortedSet<Order> sellSet = sellOrders.get(product);
             if (buySet == null || sellSet == null) {
                 // no buy or sell orders for this product
                 return;
             }
-            while (!buySet.isEmpty() && !sellSet.isEmpty() && buySet.first().getMaxPricePerUnit() >= sellSet.first().getMinPricePerUnit()) {
+            while (!buySet.isEmpty() && !sellSet.isEmpty() && buySet.first().getPriceUnit() >= sellSet.first().getPriceUnit()) {
                 // execute a trade
-                BuyOrder buyOrder = buySet.first();
-                SellOrder sellOrder = sellSet.first();
+                Order buyOrder = buySet.first();
+                Order sellOrder = sellSet.first();
                 int quantity = Math.min(buyOrder.getQuantity(), sellOrder.getQuantity());
-                buyOrder.execute(sellOrder.issuer, quantity);
-                sellOrder.execute(buyOrder.issuer, quantity);
+                buyOrder.execute(sellOrder.getIssuer(), quantity);
+                sellOrder.execute(buyOrder.getIssuer(), quantity);
                 if (buyOrder.isComplete()) {
                     buySet.remove(buyOrder);
                 }

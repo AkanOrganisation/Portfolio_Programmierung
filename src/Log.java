@@ -1,6 +1,3 @@
-package Log;
-
-
 import java.util.*;
 
 public class Log {
