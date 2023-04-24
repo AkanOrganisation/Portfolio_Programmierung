@@ -1,6 +1,9 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +38,17 @@ public class CatalogProduct {
         catalog.add(this);
     }
 
+    public static CatalogProduct[] loadFromJsonFile(String filePath) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(new File(filePath), CatalogProduct[].class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new CatalogProduct[0];
+        }
+    }
+
 
     public static CatalogProduct getProductByName(String productName) {
         return catalog.stream().filter(product -> product.name.equals(productName.toLowerCase())).findFirst().orElse(null);
@@ -42,6 +56,10 @@ public class CatalogProduct {
 
     public static CatalogProduct getProductById(int id) {
         return catalog.stream().filter(product -> product.id == id).findFirst().orElse(null);
+    }
+
+    public static void addAllToCatalog(CatalogProduct[] catalogProducts) {
+        catalog.addAll(List.of(catalogProducts));
     }
 
     public List<Component> getComponents() {

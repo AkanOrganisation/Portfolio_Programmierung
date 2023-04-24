@@ -22,7 +22,7 @@ public abstract class Order {
     }
 
     // Abstract method to be implemented in subclasses
-    public abstract void execute(Player partner ,int quantity);
+    public abstract void execute(Player partner , int quantity);
 
     void finish(){
         this.completed.countDown();

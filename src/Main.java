@@ -1,21 +1,20 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main {
     static int maxRounds = 5;
-    static String catalogFilePath = "./src/Catalog.json";
-    static String playersFilePath = "./src/players.json";
+    static String catalogFilePath = "./src/data/catalog.json";
+    static String playersFilePath = "./src/data/players.json";
     static int currentRound = 0;
     static ArrayList<Thread> threads = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException {
         // Load catalog and players from file
-        CatalogProduct.catalog.addAll(Arrays.asList(CatalogProductData.loadFromJsonFile(catalogFilePath)));
-        PlayerData.playersData.addAll(Arrays.asList(PlayerData.loadFromJsonFile(playersFilePath)));
+        CatalogProduct.loadFromJsonFile(catalogFilePath);
+        PlayerController.loadFromJsonFile(playersFilePath);
 
         // set CountDown to the number of players
-        System.out.println("Numbers of players:" + PlayerData.getNumberOfPlayers());
-        Synchronizer.setNumberOfPlayers(PlayerData.getNumberOfPlayers());
+        System.out.println("Numbers of players:" + PlayerController.getNumberOfPlayers());
+        Synchronizer.setNumberOfPlayers(PlayerController.getNumberOfPlayers());
 
         // Start market thread
         Thread marketThread = new Thread(Market.getInstance(), "MarketThread");
@@ -23,10 +22,10 @@ public class Main {
         threads.add(marketThread);
 
         // Start player threads
-        for (PlayerData playerData : PlayerData.playersData) {
-            Thread playerDataThread = new Thread(playerData, "PlayerDataThread: " +playerData.getName());
-            playerDataThread.start();
-            threads.add(playerDataThread);
+        for (PlayerController playerController : PlayerController.getPlayersControllers()) {
+            Thread playerControllerThread = new Thread(playerController, "PlayerThread: " + playerController.getName());
+            playerControllerThread.start();
+            threads.add(playerControllerThread);
         }
 
         // Wait all players loaded
@@ -39,7 +38,7 @@ public class Main {
             System.out.println("Round " + (currentRound + 1) + " started");
 
             // Notify all players that a new round has started
-            Synchronizer.setRoundStarted(Player.getNumberOfPlayers());
+            Synchronizer.setRoundStarted(Player.getNumberOfActivePlayers());
 
             // Wait for all players to finish their turn
             Synchronizer.waitForPlayers();
@@ -59,12 +58,12 @@ public class Main {
         }
 
         // notify all that the game is finished
-        System.out.println("game Finished");
+        System.out.println("Game finished");
         Synchronizer.setGameFinished();
 
         // Stop all threads
-        for(Thread thread: threads) thread.interrupt();
-        System.out.println("finished");
+        for (Thread thread : threads) thread.interrupt();
+        System.out.println("Game closed");
         System.exit(0);
     }
 
