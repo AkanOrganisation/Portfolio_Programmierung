@@ -1,1 +1,19 @@
-/bin/
+# Gradle build output
+.gradle/
+build/
+
+# IntelliJ IDEA specific
+.idea/
+*.iml
+*.iws
+
+# Eclipse specific
+.classpath
+.project
+.settings/
+
+# Log files
+*.log
+
+# macOS specific
+.DS_Store
