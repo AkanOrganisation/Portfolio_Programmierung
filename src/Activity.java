@@ -1,91 +1,189 @@
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import java.util.Random;
+/**
+ *
+ * This code defines four interfaces: Buy, Build, Consume, and Sell, that can be
+ * implemented by the Player class. The Buy interface defines methods for
+ * creating buy orders and waiting for them to complete. The Build interface
+ * extends the Buy interface and defines a method for building a product using
+ * the player's stock of materials. The Consume interface extends the Buy
+ * interface and defines a method for consuming a product from the player's
+ * stock. The Sell interface extends the Build interface and defines a method
+ * for selling a product, either from the player's existing stock or by building
+ * more if necessary.
+ *
+ */
 
-public class Activity implements Buy, Sell, Build, Consume {
-    private final Player player;
-    private final ActivityType type;
-    private final CatalogProduct product;
-    private final int minQuantity;
-    private final int maxQuantity;
-    private boolean finished;
-
-
-    public Activity(Player player, ActivityType type, CatalogProduct product, int minQuantity, int maxQuantity) {
-        this.player = player;
-        this.type = type;
-        this.product = product;
-        this.minQuantity = minQuantity;
-        this.maxQuantity = maxQuantity;
-        this.finished = false;
-
+interface Buy {
+    /**
+     * Creates a new buy order for the specified player, product, and quantity.
+     *
+     * @param player   the player who is placing the buy order
+     * @param product  the product being bought
+     * @param quantity the quantity of the product being bought
+     * @return the new buy order
+     */
+    default Order buy(Player player, CatalogProduct product, int quantity) {
+        return Order.newBuyOrder(player, product, quantity);
     }
 
-    public void execute() throws InterruptedException {
-        int quantity = new Random().nextInt(maxQuantity - minQuantity) + minQuantity;
-        switch (type) {
-            case BUY -> buy(player, product, quantity);
-            case SELL -> sell(player, product, quantity);
-            case BUILD -> build(player, product, quantity);
-            case CONSUME -> consume(player, product, quantity);
-            default -> throw new IllegalArgumentException("Invalid activity type: " + type);
-        }
-        this.finished = true;
+    /**
+     * Waits for the specified buy order to complete.
+     *
+     * @param order the buy order to wait for
+     * @throws InterruptedException if the thread is interrupted while waiting
+     */
+    default void waitForBuyOrder(Order order) throws InterruptedException {
+        order.waitUntilCompleted(100, TimeUnit.MILLISECONDS);
     }
+}
 
-    public boolean isFinished() {
-        return this.finished;
-    }
+interface Build extends Buy {
+    /**
+     * Builds a product using the player's stock of materials.
+     *
+     * @param player   the player who is building the product
+     * @param product  the product being built
+     * @param quantity the quantity of the product being built
+     * @throws InterruptedException if the thread is interrupted while waiting for
+     *                              buy orders to complete
+     */
+    default void build(Player player, CatalogProduct product, int quantity) throws InterruptedException {
+        if (player.getType() == Player.Type.SUPPLIER) {
+            player.getStock().addProducts(product, quantity);
+            return;
+        }
+        List<CatalogProduct.Component> components = product.getComponents();
+        Map<CatalogProduct, Integer> requiredMaterials = new HashMap<>();
 
-    public static class Data {
-
-        ActivityType type;
-        CatalogProduct product;
-        int minQuantity;
-        int maxQuantity;
-
-        @JsonCreator
-        Data(@JsonProperty("type") String type,
-             @JsonProperty("product") String product,
-             @JsonProperty("min") int minQuantity,
-             @JsonProperty("max") int maxQuantity) {
-            this.type = ActivityType.fromName(type);
-            this.product = CatalogProduct.getProductByName(product);
-            this.minQuantity = minQuantity;
-            this.maxQuantity = maxQuantity;
+        // Count the required quantity of each component
+        for (CatalogProduct.Component component : components) {
+            CatalogProduct material = component.getProduct();
+            int requiredQuantity = component.getQuantity() * quantity;
+            requiredMaterials.merge(material, requiredQuantity, Integer::sum);
         }
 
-        public ActivityType getType() {
-            return type;
-        }
-
-        public CatalogProduct getProduct() {
-            return product;
-        }
-
-        public int getMinQuantity() {
-            return minQuantity;
-        }
-
-        public int getMaxQuantity() {
-            return maxQuantity;
-        }
-    }
-
-    public enum ActivityType {
-        BUY,
-        SELL,
-        BUILD,
-        CONSUME;
-
-        public static ActivityType fromName(String name) {
-            for (ActivityType type : ActivityType.values()) {
-                if (type.name().equalsIgnoreCase(name)) {
-                    return type;
-                }
+        // Check if the player has enough materials to build the product
+        Map<CatalogProduct, Integer> availableMaterials = player.getStock().getProductQuantities();
+        boolean hasEnoughMaterials = true;
+        ArrayList<Order> buyOrders = new ArrayList<>();
+        for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
+            CatalogProduct material = entry.getKey();
+            int requiredQuantity = entry.getValue();
+            int availableQuantity = availableMaterials.getOrDefault(material, 0);
+            if (availableQuantity < requiredQuantity) {
+                // Not enough materials, buy more and then build
+                buyOrders.add(buy(player, material, requiredQuantity - availableQuantity));
+                hasEnoughMaterials = false;
             }
-            throw new IllegalArgumentException("Invalid activity type name: " + name);
         }
+
+        if (!hasEnoughMaterials) {
+            // Wait for the buy orders to complete
+            while (buyOrders.size() > 0) {
+                waitForBuyOrder(buyOrders.get(0));
+                buyOrders.remove(0);
+            }
+        }
+
+        // Calculate how many products can be built
+        int maxQuantity = Integer.MAX_VALUE;
+        for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
+            CatalogProduct material = entry.getKey();
+            int requiredQuantity = entry.getValue();
+            int availableQuantity = player.getStock().getProductQuantities().getOrDefault(material, 0);
+            maxQuantity = Math.min(maxQuantity, availableQuantity / requiredQuantity);
+        }
+        if (maxQuantity == Integer.MAX_VALUE) {
+            return;
+        }
+        // Remove the required materials from the player's stock and add the built
+        // product
+        for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
+            CatalogProduct material = entry.getKey();
+            int requiredQuantity = entry.getValue();
+            player.getStock().removeProducts(material, requiredQuantity * maxQuantity);
+        }
+        player.getStock().addProducts(product, maxQuantity);
+    }
+}
+
+/**
+ *
+ * The Consume interface extends the Buy interface and defines a default method
+ * consume that allows a player to consume a certain quantity of a
+ * CatalogProduct from their stock. If the player does not have enough stock of
+ * the product, the method will attempt to buy the remaining quantity and wait
+ * for the buy order to complete before consuming the product.
+ */
+interface Consume extends Buy {
+    /**
+     * Consumes a certain quantity of a CatalogProduct from a player's stock.
+     *
+     * @param player   the player who wants to consume the product
+     * @param product  the product to be consumed
+     * @param quantity the quantity of the product to consume
+     * @throws InterruptedException if the thread is interrupted while waiting for a
+     *                              buy order to complete
+     */
+    default void consume(Player player, CatalogProduct product, int quantity) throws InterruptedException {
+        List<CatalogProduct.Product> products = player.getStock().getProducts(product);
+        int availableQuantity = products.size();
+
+        if (!(availableQuantity >= quantity)) {
+            // Not enough stock, buy more and then consume
+            waitForBuyOrder(buy(player, product, quantity - availableQuantity));
+        }
+
+        player.getStock().removeProducts(product, quantity);
+    }
+}
+
+/**
+ *
+ * The Sell interface extends the Build interface and defines a default method
+ * sell that allows a player to sell a certain quantity of a CatalogProduct from
+ * their stock. If the player does not have enough stock of the product, the
+ * method will attempt to build the remaining quantity and update the available
+ * quantity before selling. The method then creates a new sell order for the
+ * requested quantity of products or all the available products, whichever is
+ * smaller.
+ */
+interface Sell extends Build {
+    /*
+     * Sells a certain quantity of a CatalogProduct from a player's stock.
+     *
+     * @param player the player who wants to sell the product
+     *
+     * @param product the product to be sold
+     *
+     * @param quantity the quantity of the product to sell
+     *
+     * @throws InterruptedException if the thread is interrupted while waiting for a
+     * build order to complete
+     */
+    default void sell(Player player, CatalogProduct product, int quantity) throws InterruptedException {
+        List<CatalogProduct.Product> products = player.getStock().getProducts(product);
+        int availableQuantity = products.size();
+
+        if (!(availableQuantity >= quantity)) {
+            // Not enough products in stock, try to build
+            int quantityToBuild = quantity - availableQuantity;
+            build(player, product, quantityToBuild);
+
+            // Get the updated quantity of available products
+            products = player.getStock().getProducts(product);
+            availableQuantity = products.size();
+
+        }
+        // Actions.Sell the requested quantity of products or all the available
+        // products, whichever is smaller
+        int quantityToSell = Math.min(quantity, availableQuantity);
+        if (quantityToSell > 0)
+            Order.newSellOrder(player, product, quantityToSell);
     }
 }
