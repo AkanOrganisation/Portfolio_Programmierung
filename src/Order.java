@@ -17,12 +17,10 @@ public abstract class Order {
      * Creates a new order with the given parameters.
      *
      * @param issuer    the player who issued the order
-     * @param completed show the completed status
      * @param product   the product being bought or sold
      * @param quantity  the quantity of the product to be bought or sold
-     * @param priceUnit shows the priceUnit of the selected product
      */
-    public Order(Player issuer, CatalogProduct product, int quantity) {
+    private Order(Player issuer, CatalogProduct product, int quantity) {
         this.issuer = issuer;
         this.product = product;
         this.quantity = quantity;
