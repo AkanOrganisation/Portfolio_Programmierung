@@ -132,6 +132,18 @@ public class CatalogProduct {
         return name;
     }
 
+    public double getComponentsPrice() {
+        return this.components.stream()
+                .mapToDouble(component -> component.getProduct().getRecommendedPrice() * component.getQuantity())
+                .sum();
+    }
+
+    public double getComponentsPrice(CatalogProduct searchComponent) {
+        return this.components.stream().filter(component -> component.getProduct().equals(searchComponent))
+                .mapToDouble(component -> component.getProduct().getRecommendedPrice() * component.getQuantity())
+                .sum();
+    }
+
     /**
      * The Component class represents a component of a product, including its ID,
      * quantity, and associated CatalogProduct instance.

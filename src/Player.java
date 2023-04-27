@@ -54,6 +54,8 @@ public class Player {
 
     private final History history;
 
+    private double priceTolerance = 10/100.0;
+
     /**
      Constructs a player with the given name and type.
      @param name the name of the player
@@ -195,6 +197,11 @@ public class Player {
 
     public int getRound() {
         return Main.getRound();
+    }
+
+
+    public double getPriceTolerance() {
+        return this.priceTolerance;
     }
 
     /**

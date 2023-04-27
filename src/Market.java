@@ -23,14 +23,13 @@ public class Market implements Runnable {
      * set of sell orders.
      */
     private final Map<CatalogProduct, SortedSet<Order>> sellOrders;
+    private final History history;
     /**
      * The newOrders boolean represents whether new orders have been added to the
      * market.
      */
     private boolean newOrders;
-
-
-    private final History history;
+    private double money;
 
     /**
      * The constructor initializes the buyOrders and sellOrders maps as empty
@@ -42,18 +41,6 @@ public class Market implements Runnable {
         history = new History();
     }
 
-    public History getHistory() {
-        return history;
-    }
-
-    /**
-     * The InstanceHolder class ensures that only one instance of the Market class
-     * is created.
-     */
-    private static final class InstanceHolder {
-        private static final Market instance = new Market();
-    }
-
     /**
      * The getInstance method returns the single instance of the Market class.
      *
@@ -61,6 +48,10 @@ public class Market implements Runnable {
      */
     public static Market getInstance() {
         return InstanceHolder.instance;
+    }
+
+    public History getHistory() {
+        return history;
     }
 
     /**
@@ -186,6 +177,10 @@ public class Market implements Runnable {
                 int quantity = Math.min(buyOrder.getQuantity(), sellOrder.getQuantity());
                 buyOrder.execute(sellOrder.getIssuer(), quantity);
                 sellOrder.execute(buyOrder.getIssuer(), quantity);
+                double marketRevenue = Math.floor(quantity * Math.abs(sellOrder.getPriceUnit() - buyOrder.getPriceUnit()) * 100) / 100.0;
+                marketRevenue(marketRevenue);
+                Log.getInstance().addMessage("Trade executed: " + quantity + " " + product.getName() + " from "
+                        + sellOrder.getIssuer().getName() + " to " + buyOrder.getIssuer().getName() + ". Market revenue: " + marketRevenue);
                 if (buyOrder.isComplete()) {
                     buySet.remove(buyOrder);
                 }
@@ -196,11 +191,23 @@ public class Market implements Runnable {
         }
     }
 
+    private void marketRevenue(double v) {
+        this.money += v;
+    }
+
     /**
      * The clearOrders method clears all buy and sell orders of the run.
      */
     public void clearOrders() {
         this.buyOrders.clear();
         this.sellOrders.clear();
+    }
+
+    /**
+     * The InstanceHolder class ensures that only one instance of the Market class
+     * is created.
+     */
+    private static final class InstanceHolder {
+        private static final Market instance = new Market();
     }
 }

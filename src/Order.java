@@ -2,7 +2,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * An abstract class representing a generic order to buy or sell a specific
  * product in a market.
  */
@@ -16,14 +15,15 @@ public abstract class Order {
     /**
      * Creates a new order with the given parameters.
      *
-     * @param issuer    the player who issued the order
-     * @param product   the product being bought or sold
-     * @param quantity  the quantity of the product to be bought or sold
+     * @param issuer   the player who issued the order
+     * @param product  the product being bought or sold
+     * @param quantity the quantity of the product to be bought or sold
      */
-    private Order(Player issuer, CatalogProduct product, int quantity) {
+    private Order(Player issuer, CatalogProduct product, int quantity, double limitPrice) {
         this.issuer = issuer;
         this.product = product;
         this.quantity = quantity;
+        this.priceUnit = calculatePrice(limitPrice);
         this.completed = new CountDownLatch(1);
     }
 
@@ -35,8 +35,8 @@ public abstract class Order {
      * @param quantityToBuy the quantity of the product to be bought
      * @return a new buy order
      */
-    public static Order newBuyOrder(Player issuer, CatalogProduct product, int quantityToBuy) {
-        return new BuyOrder(issuer, product, quantityToBuy);
+    public static Order newBuyOrder(Player issuer, CatalogProduct product, int quantityToBuy, double limitPrice) {
+        return new BuyOrder(issuer, product, quantityToBuy, limitPrice);
     }
 
     /**
@@ -47,8 +47,8 @@ public abstract class Order {
      * @param quantityToSell the quantity of the product to be sold
      * @return a new sell order
      */
-    public static Order newSellOrder(Player issuer, CatalogProduct product, int quantityToSell) {
-        return new SellOrder(issuer, product, quantityToSell);
+    public static Order newSellOrder(Player issuer, CatalogProduct product, int quantityToSell, double minSellPrice) {
+        return new SellOrder(issuer, product, quantityToSell, minSellPrice);
     }
 
     /**
@@ -57,13 +57,8 @@ public abstract class Order {
      *
      * @return the unit price of the product
      */
-    private double calculatePrice() {
-        // TODO: 17.04.2023 calculate price based on some logic in child classes. make
-        // this abstract
-        return product.getRecommendedPrice();
-        // Implementation to be defined
-        // Abstract method to be implemented in subclasses
-    }
+    protected abstract double calculatePrice(double limitPrice);
+
 
     /**
      * Executes the order with the given partner and quantity.
@@ -136,11 +131,41 @@ public abstract class Order {
      */
     private static class SellOrder extends Order {
 
-        private SellOrder(Player issuer, CatalogProduct item, int quantity) {
-            super(issuer, item, quantity);
-            super.priceUnit = super.calculatePrice();
+        private SellOrder(Player issuer, CatalogProduct item, int quantity, double minSellPrice) {
+            super(issuer, item, quantity, minSellPrice);
             Market.getInstance().addSellOrder(this);
+            getIssuer().getHistory().addRecord(Main.getRound(), item, 0, 0, quantity, 0);
+
         }
+
+        @Override
+        protected double calculatePrice(double minSellPrice) {
+            return calculateSellPrice(minSellPrice);
+        }
+
+        private double calculateSellPrice(double minSellPrice) {
+            int currentRound = Main.getRound();
+            double playerSoldPreviousRound = getIssuer().getHistory().getSold(currentRound - 1, getProduct());
+            double marketSoldPreviousRound = Market.getInstance().getHistory().getSold(currentRound - 1, getProduct());
+            double playerRatio = playerSoldPreviousRound / marketSoldPreviousRound;
+
+            int playerDesiredQuantityLastRound = getIssuer().getHistory().getDesiredSell(currentRound - 1, getProduct());
+
+            double recommendedPrice = getProduct().getRecommendedPrice();
+
+            // Adjust the price based on the player ratio
+            if (Double.isNaN(playerRatio)) {
+                return recommendedPrice;
+            }
+            double quantityFactor = playerDesiredQuantityLastRound > 0 ? playerSoldPreviousRound / playerDesiredQuantityLastRound : 0;
+
+            double adjustedPrice = recommendedPrice * (1 + playerRatio/10 - quantityFactor);
+
+            // Round the price to cents
+            adjustedPrice = Math.floor(adjustedPrice * 100) / 100.0;
+            return Math.max(adjustedPrice, minSellPrice);
+        }
+
 
         /**
          * Sells the product to the partner and updates the players' stocks and money
@@ -159,11 +184,9 @@ public abstract class Order {
             super.issuer.getStock().removeProducts(getProduct(), soldQuantity);
             super.issuer.addMoney(totalPrice);
             super.quantity -= soldQuantity;
-            super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity);
-            Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity);
-            Log.getInstance().addMessage(
-                    super.issuer.getName() + " Sold " + soldQuantity + " units of " + super.product.getName() + " for "
-                            + totalPrice + " to " + partner.getType() + " " + partner.getName());
+            super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity, 0, 0);
+            Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity, 0, 0);
+            Log.getInstance().addMessage(super.issuer.getName() + " Sold " + soldQuantity + " units of " + super.product.getName() + " for " + totalPrice + " to " + partner.getType() + " " + partner.getName());
 
             /*
              * Check if the order is complete
@@ -176,7 +199,6 @@ public abstract class Order {
     }
 
     /**
-     *
      * The BuyOrder class represents a buy order, which is an order placed by a
      * player to buy a certain quantity of a catalog product at a certain price from
      * another player. It extends the Order class and implements the execute()
@@ -191,10 +213,41 @@ public abstract class Order {
          * @param quantity the quantity of the product to be bought
          */
 
-        private BuyOrder(Player issuer, CatalogProduct item, int quantity) {
-            super(issuer, item, quantity);
-            super.priceUnit = super.calculatePrice();
+        private BuyOrder(Player issuer, CatalogProduct item, int quantity, double maxPrice) {
+            super(issuer, item, quantity, maxPrice);
+            super.priceUnit = calculatePrice(maxPrice);
             Market.getInstance().addBuyOrder(this);
+            getIssuer().getHistory().addRecord(Main.getRound(), item, 0, 0, 0, quantity);
+
+        }
+
+        @Override
+        protected double calculatePrice(double maxPrice) {
+            return calculateBuyPrice(maxPrice);
+        }
+
+        private double calculateBuyPrice(double maxPrice) {
+            int currentRound = Main.getRound();
+            double playerBoughtPreviousRound = getIssuer().getHistory().getBought(currentRound - 1, getProduct());
+            double marketBoughtPreviousRound = Market.getInstance().getHistory().getBought(currentRound - 1, getProduct());
+            double playerRatio = playerBoughtPreviousRound / marketBoughtPreviousRound;
+
+            int playerDesiredQuantityLastRound = getIssuer().getHistory().getDesiredBuy(currentRound - 1, getProduct());
+
+            double recommendedPrice = getProduct().getRecommendedPrice();
+
+            // Adjust the price based on the player ratio and quantity factor
+            if (Double.isNaN(playerRatio)) {
+                return recommendedPrice;
+            }
+            double quantityFactor = playerDesiredQuantityLastRound > 0 ? playerBoughtPreviousRound / playerDesiredQuantityLastRound : 0;
+
+            double adjustedPrice = recommendedPrice * (1 + playerRatio/10 + quantityFactor);
+
+
+            // Round the price to cents
+            adjustedPrice = Math.floor(adjustedPrice * 100) / 100.0;
+            return Math.min(adjustedPrice, maxPrice);
         }
 
         /**
@@ -217,12 +270,9 @@ public abstract class Order {
             super.issuer.removeMoney(totalPrice);
             super.quantity -= boughtQuantity;
 
-            super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0);
-            Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0);
-            Log.getInstance()
-                    .addMessage(super.issuer.getName() + " bought " + boughtQuantity + " units of "
-                            + super.product.getName() + " for " + totalPrice + " from " + partner.getType() + " "
-                            + partner.getName());
+            super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
+            Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
+            Log.getInstance().addMessage(super.issuer.getName() + " bought " + boughtQuantity + " units of " + super.product.getName() + " for " + totalPrice + " from " + partner.getType() + " " + partner.getName());
             /*
              * check if the order is complete
              */
@@ -232,4 +282,6 @@ public abstract class Order {
         }
 
     }
+
+
 }

@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * This code defines four interfaces: Buy, Build, Consume, and Sell, that can be
  * implemented by the Player class. The Buy interface defines methods for
  * creating buy orders and waiting for them to complete. The Build interface
@@ -15,7 +14,6 @@ import java.util.concurrent.TimeUnit;
  * stock. The Sell interface extends the Build interface and defines a method
  * for selling a product, either from the player's existing stock or by building
  * more if necessary.
- *
  */
 
 interface Buy {
@@ -28,7 +26,16 @@ interface Buy {
      * @return the new buy order
      */
     default Order buy(Player player, CatalogProduct product, int quantity) {
-        return Order.newBuyOrder(player, product, quantity);
+        return Order.newBuyOrder(player, product, quantity, calculateMaxPricePerUnit(player, product));
+
+    }
+
+    default Order buy(Player player, CatalogProduct product, int quantity, double maxPrice) {
+        return Order.newBuyOrder(player, product, quantity, maxPrice);
+    }
+
+    default double calculateMaxPricePerUnit(Player player, CatalogProduct product) {
+        return product.getRecommendedPrice() * (1 + player.getPriceTolerance());
     }
 
     /**
@@ -76,8 +83,11 @@ interface Build extends Buy {
             int requiredQuantity = entry.getValue();
             int availableQuantity = availableMaterials.getOrDefault(material, 0);
             if (availableQuantity < requiredQuantity) {
+                // calculate the maximum price to pay for the material
+                double maxBuyPrice = product.getComponentsPrice(material) / product.getComponentsPrice() * product.getRecommendedPrice();
+                //System.out.println("maxBuyPrice: " + maxBuyPrice + " for " + material.getName() + " for " + product.getName() + " with components price: " + product.getComponentsPrice(material) + " and recommended price: " + product.getRecommendedPrice());
                 // Not enough materials, buy more and then build
-                buyOrders.add(buy(player, material, requiredQuantity - availableQuantity));
+                buyOrders.add(buy(player, material, requiredQuantity - availableQuantity, maxBuyPrice));
                 hasEnoughMaterials = false;
             }
         }
@@ -91,14 +101,14 @@ interface Build extends Buy {
         }
 
         // Calculate how many products can be built
-        int maxQuantity = Integer.MAX_VALUE;
+        int maxCanBuildQuantity = Integer.MAX_VALUE;
         for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
             CatalogProduct material = entry.getKey();
             int requiredQuantity = entry.getValue();
             int availableQuantity = player.getStock().getProductQuantities().getOrDefault(material, 0);
-            maxQuantity = Math.min(maxQuantity, availableQuantity / requiredQuantity);
+            maxCanBuildQuantity = Math.min(maxCanBuildQuantity, availableQuantity / requiredQuantity);
         }
-        if (maxQuantity == Integer.MAX_VALUE) {
+        if (maxCanBuildQuantity == Integer.MAX_VALUE) {
             return;
         }
         // Remove the required materials from the player's stock and add the built
@@ -106,14 +116,14 @@ interface Build extends Buy {
         for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
             CatalogProduct material = entry.getKey();
             int requiredQuantity = entry.getValue();
-            player.getStock().removeProducts(material, requiredQuantity * maxQuantity);
+            player.getStock().removeProducts(material, requiredQuantity * maxCanBuildQuantity);
         }
-        player.getStock().addProducts(product, maxQuantity);
+        player.getStock().addProducts(product, maxCanBuildQuantity);
     }
+
 }
 
 /**
- *
  * The Consume interface extends the Buy interface and defines a default method
  * consume that allows a player to consume a certain quantity of a
  * CatalogProduct from their stock. If the player does not have enough stock of
@@ -136,7 +146,7 @@ interface Consume extends Buy {
 
         if (!(availableQuantity >= quantity)) {
             // Not enough stock, buy more and then consume
-            waitForBuyOrder(buy(player, product, quantity - availableQuantity));
+            waitForBuyOrder(buy(player, product, quantity - availableQuantity, calculateMaxPricePerUnit(player, product)));
         }
 
         player.getStock().removeProducts(product, quantity);
@@ -144,7 +154,6 @@ interface Consume extends Buy {
 }
 
 /**
- *
  * The Sell interface extends the Build interface and defines a default method
  * sell that allows a player to sell a certain quantity of a CatalogProduct from
  * their stock. If the player does not have enough stock of the product, the
@@ -184,6 +193,10 @@ interface Sell extends Build {
         // products, whichever is smaller
         int quantityToSell = Math.min(quantity, availableQuantity);
         if (quantityToSell > 0)
-            Order.newSellOrder(player, product, quantityToSell);
+            Order.newSellOrder(player, product, quantityToSell, calculateMinPricePerUnit(player, product));
+    }
+
+    default double calculateMinPricePerUnit(Player player, CatalogProduct product) {
+        return product.getRecommendedPrice() * ( 1 - player.getPriceTolerance());
     }
 }
