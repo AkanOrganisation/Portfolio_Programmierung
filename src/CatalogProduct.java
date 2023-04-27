@@ -19,6 +19,8 @@ public class CatalogProduct {
      * Static attribute to store all created instances.
      */
     public static ArrayList<CatalogProduct> catalog = new ArrayList<>();
+
+    private static int nextId = 0;
     /**
      * The ID of the product.
      */
@@ -39,16 +41,15 @@ public class CatalogProduct {
     /**
      * Constructor for CatalogProduct class.
      *
-     * @param id               the ID of the product
      * @param name             the name of the product
      * @param recommendedPrice the recommended price of the product
      * @param components       the list of components that make up the product
      */
     @JsonCreator
-    public CatalogProduct(@JsonProperty("id") int id, @JsonProperty("name") String name,
+    public CatalogProduct(@JsonProperty("name") String name,
                           @JsonProperty("recommendedPrice") double recommendedPrice,
                           @JsonProperty("components") ArrayList<Component> components) {
-        this.id = id;
+        this.id = nextId++;
         this.name = name.toLowerCase();
         this.recommendedPrice = recommendedPrice;
         this.components = components;
@@ -156,13 +157,13 @@ public class CatalogProduct {
         /**
          * Constructor for Component class.
          *
-         * @param id       the ID of the product
+         * @param name       the Name of the product
          * @param quantity of the selected products
          */
         @JsonCreator
-        Component(@JsonProperty("id") int id, @JsonProperty("quantity") int quantity) {
-            this.id = id;
-            this.product = getProductById(id);
+        Component(@JsonProperty("name") String name, @JsonProperty("quantity") int quantity) {
+            this.product = getProductByName(name);
+            this.id = this.product.id;
             this.quantity = quantity;
         }
 
@@ -176,7 +177,7 @@ public class CatalogProduct {
         }
 
         /**
-         * Retrieves the the quantity of the product.
+         * Retrieves the quantity of the product.
          *
          * @return The quantity of the product.
          */
