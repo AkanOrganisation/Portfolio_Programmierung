@@ -2,7 +2,7 @@
   {
     "name": "Siemens",
     "type": "manufacturer",
-    "priceTolerance": 0.1,
+    "priceTolerance": 0.2,
     "activities": [
       {
         "type": "Sell",
@@ -15,6 +15,18 @@
         "product": "Bed",
         "min": 250.0,
         "max": 300.0
+      },
+      {
+        "type": "Sell",
+        "product": "Chair",
+        "min": 90.0,
+        "max": 110.0
+      },
+      {
+        "type": "Sell",
+        "product": "Table",
+        "min": 180.0,
+        "max": 220.0
       }
     ]
   },
@@ -64,6 +76,24 @@
         "product": "Table",
         "min": 180.0,
         "max": 220.0
+      },
+      {
+        "type": "Consume",
+        "product": "Chair",
+        "min": 90.0,
+        "max": 110.0
+      },
+      {
+        "type": "Consume",
+        "product": "Computer Desk",
+        "min": 150.0,
+        "max": 180.0
+      },
+      {
+        "type": "Consume",
+        "product": "Bed",
+        "min": 250.0,
+        "max": 300.0
       }
     ]
   },
@@ -83,6 +113,18 @@
         "product": "Wardrobe",
         "min": 400.0,
         "max": 500.0
+      },
+      {
+        "type": "Sell",
+        "product": "Bookshelf",
+        "min": 70.0,
+        "max": 90.0
+      },
+      {
+        "type": "Sell",
+        "product": "Lamp",
+        "min": 40.0,
+        "max": 60.0
       }
     ]
   },
@@ -90,7 +132,6 @@
     "name": "Dow",
     "type": "supplier",
     "priceTolerance": 0.5,
-
     "activities": [
       {
         "type": "Sell",
@@ -111,6 +152,91 @@
         "max": 38.0
       }
     ]
+  },
+  {
+    "name": "IKEA",
+    "type": "manufacturer",
+    "priceTolerance": 0.2,
+    "activities": [
+      {
+        "type": "Sell",
+        "product": "Sofa",
+        "min": 240.0,
+        "max": 260.0
+      },
+      {
+        "type": "Sell",
+        "product": "Coffee Table",
+        "min": 100.0,
+        "max": 140.0
+      },
+      {
+        "type": "Sell",
+        "product": "Kitchen Cabinet",
+        "min": 330.0,
+        "max": 370.0
+      }
+    ]
+  },
+  {
+    "name": "Ashley",
+    "type": "consumer",
+    "activities": [
+      {
+        "type": "Consume",
+        "product": "Sofa",
+        "min": 240.0,
+        "max": 260.0
+      },
+      {
+        "type": "Consume",
+        "product": "Coffee Table",
+        "min": 100.0,
+        "max": 140.0
+      },
+      {
+        "type": "Consume",
+        "product": "Kitchen Cabinet",
+        "min": 330.0,
+        "max": 370.0
+      },
+      {
+        "type": "Consume",
+        "product": "TV Stand",
+        "min": 160.0,
+        "max": 200.0
+      },
+      {
+        "type": "Consume",
+        "product": "Wardrobe",
+        "min": 400.0,
+        "max": 500.0
+      },
+      {
+        "type": "Consume",
+        "product": "Bookshelf",
+        "min": 70.0,
+        "max": 90.0
+      },
+      {
+        "type": "Consume",
+        "product": "Lamp",
+        "min": 40.0,
+        "max": 60.0
+      }
+    ]
+  },
+  {
+    "name": "FabricLand",
+    "type": "supplier",
+    "priceTolerance": 0.11,
+    "activities": [
+      {
+        "type": "Sell",
+        "product": "Fabric",
+        "min": 4.0,
+        "max": 6.0
+      }
+    ]
   }
 ]
-
