@@ -61,13 +61,14 @@ public class Player {
      @param name the name of the player
      @param type the type of the player
      */
-    public Player(String name, Type type, ArrayList<Activity.Data> activities) {
+    public Player(String name, Type type, ArrayList<Activity.Data> activities, double priceTolerance) {
         this.id = getNextId();
         this.name = name;
         this.type = type;
         this.activities = activities.stream().map(activityData -> new Activity(this, activityData.getType(), activityData.getProduct(), activityData.getMinQuantity(), activityData.getMaxQuantity())).collect(Collectors.toCollection(ArrayList::new));
         this.stock = new Stock();
         this.history = new History();
+        this.priceTolerance = priceTolerance;
 
         //add a reference to self
         addPlayerToList(this);
@@ -217,6 +218,7 @@ public class Player {
         private final String name;
         private final Type type;
         private final ArrayList<Activity.Data> activities;
+        private double priceTolerance;
 
         /**
 
@@ -226,7 +228,7 @@ public class Player {
          @param activities the list of activities for the controller
          */
         @JsonCreator
-        Controller(@JsonProperty("name") String name, @JsonProperty("type") String type, @JsonProperty("activities") ArrayList<Activity.Data> activities) {
+        Controller(@JsonProperty("name") String name, @JsonProperty("type") String type, @JsonProperty("activities") ArrayList<Activity.Data> activities, @JsonProperty("priceTolerance") double priceTolerance) {
             this.name = name;
             this.type = Type.fromName(type);
             this.activities = activities;
@@ -275,7 +277,7 @@ public class Player {
          */
         @Override
         public void run() {
-            Player player = new Player(this.name, this.type, activities);
+            Player player = new Player(this.name, this.type, this.activities, this.priceTolerance);
 
             // Notify the player is loaded
             Synchronizer.notifyPlayerLoaded();
