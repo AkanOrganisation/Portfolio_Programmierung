@@ -2,6 +2,7 @@
   {
     "name": "Siemens",
     "type": "manufacturer",
+    "priceTolerance": 0.1,
     "activities": [
       {
         "type": "Sell",
@@ -14,24 +15,13 @@
         "product": "Bed",
         "min": 250.0,
         "max": 300.0
-      },
-      {
-        "type": "Consume",
-        "product": "Circuit Board",
-        "min": 50.0,
-        "max": 80.0
-      },
-      {
-        "type": "Consume",
-        "product": "Metal",
-        "min": 10.0,
-        "max": 15.0
       }
     ]
   },
   {
     "name": "BASF",
     "type": "supplier",
+    "priceTolerance": 0.11,
     "activities": [
       {
         "type": "Sell",
@@ -80,6 +70,7 @@
   {
     "name": "LG",
     "type": "manufacturer",
+    "priceTolerance": 0.15,
     "activities": [
       {
         "type": "Sell",
@@ -92,24 +83,14 @@
         "product": "Wardrobe",
         "min": 400.0,
         "max": 500.0
-      },
-      {
-        "type": "Consume",
-        "product": "Wood",
-        "min": 10.0,
-        "max": 15.0
-      },
-      {
-        "type": "Consume",
-        "product": "Circuit Board",
-        "min": 30.0,
-        "max": 50.0
       }
     ]
   },
   {
     "name": "Dow",
     "type": "supplier",
+    "priceTolerance": 0.5,
+
     "activities": [
       {
         "type": "Sell",
