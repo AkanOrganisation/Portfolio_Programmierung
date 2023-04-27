@@ -121,7 +121,7 @@ public class Market implements Runnable {
         try {
             Synchronizer.waitGameStart();
         } catch (InterruptedException e) {
-            Log.getInstance().addMessage("Market didn't open");
+            Log.getInstance().addMessage("Market didn't open", Log.Level.ERROR);
             throw new RuntimeException(e);
         }
 
@@ -142,7 +142,7 @@ public class Market implements Runnable {
                     }
                 } catch (InterruptedException e) {
                     if (!Synchronizer.gameFinished()) {
-                        Log.getInstance().addMessage("Market crashed");
+                        Log.getInstance().addMessage("Market crashed", Log.Level.ERROR);
                         e.printStackTrace();
                     }
                 }
@@ -180,7 +180,7 @@ public class Market implements Runnable {
                 double marketRevenue = Math.floor(quantity * Math.abs(sellOrder.getPriceUnit() - buyOrder.getPriceUnit()) * 100) / 100.0;
                 marketRevenue(marketRevenue);
                 Log.getInstance().addMessage("Trade executed: " + quantity + " " + product.getName() + " from "
-                        + sellOrder.getIssuer().getName() + " to " + buyOrder.getIssuer().getName() + ". Market revenue: " + marketRevenue);
+                        + sellOrder.getIssuer().getName() + " to " + buyOrder.getIssuer().getName() + ". Market revenue: " + marketRevenue, Log.Level.INFO);
                 if (buyOrder.isComplete()) {
                     buySet.remove(buyOrder);
                 }

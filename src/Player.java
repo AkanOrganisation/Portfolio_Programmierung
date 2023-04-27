@@ -134,8 +134,8 @@ public class Player {
      Logs a message to the application log.
      @param message the message to be logged
      */
-    public void log(String message) {
-        Log.getInstance().addMessage(message);
+    public void log(String message, Log.Level level) {
+        Log.getInstance().addMessage(message, level);
     }
 
     /**
@@ -286,7 +286,7 @@ public class Player {
             try {
                 Synchronizer.waitGameStart();
             } catch (InterruptedException e) {
-                player.log("Player %s left before the game started".formatted(this.name));
+                player.log("Player %s left before the game started".formatted(this.name), Log.Level.WARNING);
                 throw new RuntimeException(e);
             }
 
@@ -303,19 +303,19 @@ public class Player {
                     Synchronizer.waitRoundStarted();
 
                     // Play the round
-                    player.log("Player %s starting a new round".formatted(this.name));
+                    player.log("Player %s starting a new round".formatted(this.name), Log.Level.DEBUG);
                     player.playRound();
 
                     // Mark turn as finished
                     Synchronizer.notifyPlayerFinishedRound();
-                    player.log("Player %s finished the round".formatted(this.name));
+                    player.log("Player %s finished the round".formatted(this.name), Log.Level.DEBUG);
 
                     // Wait for round's end
                     Synchronizer.waitRoundFinished();
 
                 } catch (InterruptedException e) {
                     if (!Synchronizer.gameFinished()) {
-                        player.log("Player %s left before the game finished".formatted(this.name));
+                        player.log("Player %s left before the game finished".formatted(this.name), Log.Level.WARNING);
                         removePlayer(player);
                         throw new RuntimeException(e);
                     }

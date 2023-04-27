@@ -186,7 +186,7 @@ public abstract class Order {
             super.quantity -= soldQuantity;
             super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity, 0, 0);
             Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity, 0, 0);
-            Log.getInstance().addMessage(super.issuer.getName() + " Sold " + soldQuantity + " units of " + super.product.getName() + " for " + totalPrice + " to " + partner.getType() + " " + partner.getName());
+            Log.getInstance().addMessage(super.issuer.getName() + " Sold " + soldQuantity + " units of " + super.product.getName() + " for " + totalPrice + " to " + partner.getType() + " " + partner.getName(), Log.Level.INFO);
 
             /*
              * Check if the order is complete
@@ -272,7 +272,7 @@ public abstract class Order {
 
             super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
             Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
-            Log.getInstance().addMessage(super.issuer.getName() + " bought " + boughtQuantity + " units of " + super.product.getName() + " for " + totalPrice + " from " + partner.getType() + " " + partner.getName());
+            Log.getInstance().addMessage(super.issuer.getName() + " bought " + boughtQuantity + " units of " + super.product.getName() + " for " + totalPrice + " from " + partner.getType() + " " + partner.getName(), Log.Level.INFO);
             /*
              * check if the order is complete
              */
