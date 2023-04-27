@@ -145,7 +145,6 @@ public class CatalogProduct {
          * Constructor for Component class.
          *
          * @param id       the ID of the product
-         * @param product  - select product of the assigned id
          * @param quantity of the selected products
          */
         @JsonCreator
@@ -156,7 +155,7 @@ public class CatalogProduct {
         }
 
         /**
-         * Retrieves the the product of the catalog.
+         * Retrieves the product of the catalog.
          *
          * @return The product.
          */
@@ -186,8 +185,6 @@ public class CatalogProduct {
         /**
          * Constructor for Product class.
          *
-         * @param id     the ID of the product
-         * @param nextid - gets value of the id and increases the value
          */
         public Product() {
             this.id = nextId;

@@ -49,7 +49,10 @@ public class Player {
     /**
      The list of activities of the player.
      */
-    public ArrayList<Activity> activities;
+    private final ArrayList<Activity> activities;
+
+
+    private final History history;
 
     /**
      Constructs a player with the given name and type.
@@ -62,6 +65,7 @@ public class Player {
         this.type = type;
         this.activities = activities.stream().map(activityData -> new Activity(this, activityData.getType(), activityData.getProduct(), activityData.getMinQuantity(), activityData.getMaxQuantity())).collect(Collectors.toCollection(ArrayList::new));
         this.stock = new Stock();
+        this.history = new History();
 
         //add a reference to self
         addPlayerToList(this);
@@ -183,6 +187,14 @@ public class Player {
      */
     public void removeMoney(double amount) {
         this.money -= amount;
+    }
+
+    public History getHistory() {
+        return history;
+    }
+
+    public int getRound() {
+        return Main.getRound();
     }
 
     /**

@@ -114,7 +114,7 @@ public class Main {
             /*
              * Clear the market
              */
-            Market.getInstance().clearOrders();
+            //Market.getInstance().clearOrders();
 
             /*
              * Print round's log
@@ -143,4 +143,7 @@ public class Main {
         System.exit(0);
     }
 
+    public static int getRound() {
+        return currentRound;
+    }
 }

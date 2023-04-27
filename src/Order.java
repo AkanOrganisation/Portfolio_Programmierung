@@ -159,6 +159,8 @@ public abstract class Order {
             super.issuer.getStock().removeProducts(getProduct(), soldQuantity);
             super.issuer.addMoney(totalPrice);
             super.quantity -= soldQuantity;
+            super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity);
+            Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity);
             Log.getInstance().addMessage(
                     super.issuer.getName() + " Sold " + soldQuantity + " units of " + super.product.getName() + " for "
                             + totalPrice + " to " + partner.getType() + " " + partner.getName());
@@ -214,6 +216,9 @@ public abstract class Order {
             super.issuer.getStock().addProducts(getProduct(), boughtQuantity);
             super.issuer.removeMoney(totalPrice);
             super.quantity -= boughtQuantity;
+
+            super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0);
+            Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0);
             Log.getInstance()
                     .addMessage(super.issuer.getName() + " bought " + boughtQuantity + " units of "
                             + super.product.getName() + " for " + totalPrice + " from " + partner.getType() + " "

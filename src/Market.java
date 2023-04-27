@@ -29,6 +29,9 @@ public class Market implements Runnable {
      */
     private boolean newOrders;
 
+
+    private final History history;
+
     /**
      * The constructor initializes the buyOrders and sellOrders maps as empty
      * HashMaps.
@@ -36,6 +39,11 @@ public class Market implements Runnable {
     private Market() {
         buyOrders = new HashMap<>();
         sellOrders = new HashMap<>();
+        history = new History();
+    }
+
+    public History getHistory() {
+        return history;
     }
 
     /**

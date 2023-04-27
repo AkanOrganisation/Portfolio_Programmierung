@@ -20,8 +20,11 @@ public class History {
 
     public void addRecord(int round, CatalogProduct product, int bought, int sold) {
         Map<CatalogProduct, ProductRecord> roundMap = history.computeIfAbsent(round, k -> new HashMap<>());
-        roundMap.put(product, new ProductRecord(bought, sold));
+        ProductRecord record = roundMap.computeIfAbsent(product, k -> new ProductRecord(0, 0));
+        record.bought += bought;
+        record.sold += sold;
     }
+
 
     public ProductRecord getRecord(int round, CatalogProduct product) {
         return history.getOrDefault(round, new HashMap<>()).getOrDefault(product, new ProductRecord(0, 0));
