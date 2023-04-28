@@ -25,7 +25,7 @@ public class Main {
     /**
      * The maximum number of rounds for the game.
      */
-    static int maxRounds = 50;
+    static int maxRounds = 200;
     /**
      * The file path of the catalog JSON file.
      */
