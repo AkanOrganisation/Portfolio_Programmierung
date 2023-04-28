@@ -9,11 +9,19 @@ public class History {
         int desiredBuy;
         int bought;
 
-        private ProductRecord(int bought, int sold, int desiredSell, int desiredBuy) {
+        int desiredConsumption;
+        int consumed;
+
+        private ProductRecord(int bought, int sold, int desiredSell, int desiredBuy, int desiredConsumption, int consumed) {
             this.bought = bought;
             this.sold = sold;
+            this.consumed = consumed;
             this.desiredSell = desiredSell;
             this.desiredBuy = desiredBuy;
+            this.desiredConsumption = desiredConsumption;
+        }
+        private ProductRecord(int bought, int sold, int desiredSell, int desiredBuy) {
+            new ProductRecord(bought, sold, desiredSell, desiredBuy, 0, 0);
         }
     }
 
@@ -23,7 +31,7 @@ public class History {
         history = new HashMap<>();
     }
 
-    public void addRecord(int round, CatalogProduct product, int bought, int sold, int desiredSell, int desiredBuy) {
+    public void addBuySellRecord(int round, CatalogProduct product, int bought, int sold, int desiredSell, int desiredBuy) {
         Map<CatalogProduct, ProductRecord> roundMap = history.computeIfAbsent(round, k -> new HashMap<>());
         ProductRecord record = roundMap.computeIfAbsent(product, k -> new ProductRecord(0, 0, 0, 0));
         record.desiredBuy += desiredBuy;
