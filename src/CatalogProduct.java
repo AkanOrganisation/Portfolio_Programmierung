@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -66,7 +67,14 @@ public class CatalogProduct {
     public static void loadFromJsonFile(String filePath) throws LoadException {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            mapper.readValue(new File(filePath), CatalogProduct[].class);
+            JsonNode rootNode = mapper.readTree(new File(filePath));
+            JsonNode catalogNode = rootNode.get("catalog");
+
+            if (catalogNode != null) {
+                mapper.readValue(catalogNode.toString(), CatalogProduct[].class);
+            } else {
+                throw new LoadException("The 'catalog' key is missing in the JSON file");
+            }
         } catch (IOException e) {
             throw new LoadException(e);
         }

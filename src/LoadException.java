@@ -4,4 +4,9 @@ public class LoadException extends Exception {
         e.printStackTrace();
         System.out.println("Error loading catalog from file");
     }
+
+    public LoadException(String s) {
+        super(s);
+        System.out.println("Error loading catalog from file");
+    }
 }

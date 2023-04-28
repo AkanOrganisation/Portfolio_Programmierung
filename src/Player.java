@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -246,7 +247,14 @@ public class Player {
         public static void loadFromJsonFile(String filePath) throws LoadException {
             ObjectMapper mapper = new ObjectMapper();
             try {
-                mapper.readValue(new File(filePath), Controller[].class);
+                JsonNode rootNode = mapper.readTree(new File(filePath));
+                JsonNode playersNode = rootNode.get("players");
+
+                if (playersNode != null) {
+                    mapper.readValue(playersNode.toString(), Controller[].class);
+                } else {
+                    throw new LoadException("The 'players' key is missing in the JSON file");
+                }
             } catch (IOException e) {
                 throw new LoadException(e);
             }
