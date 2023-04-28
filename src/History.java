@@ -1,9 +1,9 @@
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class History {
 
-    private class ProductRecord {
+    private static class ProductRecord {
         int desiredSell;
         int sold;
         int desiredBuy;
@@ -28,11 +28,11 @@ public class History {
     private final Map<Integer, Map<CatalogProduct, ProductRecord>> history;
 
     public History() {
-        history = new HashMap<>();
+        history = new ConcurrentHashMap<>();
     }
 
     public void addBuySellRecord(int round, CatalogProduct product, int bought, int sold, int desiredSell, int desiredBuy) {
-        Map<CatalogProduct, ProductRecord> roundMap = history.computeIfAbsent(round, k -> new HashMap<>());
+        Map<CatalogProduct, ProductRecord> roundMap = history.computeIfAbsent(round, k -> new ConcurrentHashMap<>());
         ProductRecord record = roundMap.computeIfAbsent(product, k -> new ProductRecord(0, 0, 0, 0));
         record.desiredBuy += desiredBuy;
         record.bought += bought;
@@ -42,7 +42,7 @@ public class History {
 
 
     public ProductRecord getRecord(int round, CatalogProduct product) {
-        return history.getOrDefault(round, new HashMap<>()).getOrDefault(product, new ProductRecord(0, 0, 0, 0));
+        return history.getOrDefault(round, new ConcurrentHashMap<>()).getOrDefault(product, new ProductRecord(0, 0, 0, 0));
     }
 
     public int getBought(int round, CatalogProduct product) {

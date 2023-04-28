@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A singleton class that represents a log of messages for each round of a game.
@@ -15,7 +16,7 @@ public class Log {
      * as a synchronized map and sets currentRound to 0.
      */
     private Log() {
-        roundToMessagesMap = Collections.synchronizedMap(new HashMap<>());
+        roundToMessagesMap = new ConcurrentHashMap<>();
         currentRound = 0;
     }
 

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 
@@ -380,7 +381,7 @@ class Stock {
 
      A map that associates each catalog product to a list of available products in stock.
      */
-    private final Map<CatalogProduct, List<CatalogProduct.Product>> stock = new HashMap<>();
+    private final Map<CatalogProduct, List<CatalogProduct.Product>> stock = new ConcurrentHashMap<>();
 
     /**
 
@@ -433,7 +434,7 @@ class Stock {
      @return A map of product quantities for all products in the stock.
      */
     public Map<CatalogProduct, Integer> getProductQuantities() {
-        Map<CatalogProduct, Integer> productQuantities = new HashMap<>();
+        Map<CatalogProduct, Integer> productQuantities = new ConcurrentHashMap<>();
         for (CatalogProduct product : stock.keySet()) {
             int quantity = stock.get(product).size();
 
