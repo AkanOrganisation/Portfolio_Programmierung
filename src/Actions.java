@@ -156,7 +156,7 @@ interface Consume extends Buy {
 
         int consumed = player.getStock().removeProducts(product, quantity);
         if (consumed > 0)
-            Log.getInstance().addMessage(player.getName() + "consumed " + consumed + " " + product.getName() + "s", Log.Level.INFO);
+            Log.getInstance().addMessage(player.getName() + " consumed " + consumed + " " + product.getName() + "s", Log.Level.INFO);
     }
 }
 
