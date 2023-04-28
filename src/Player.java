@@ -213,7 +213,7 @@ public class Player {
      */
     public static class Controller implements Runnable {
 
-        private static final ArrayList<Controller> CONTROLLERS = new ArrayList<>();
+        private static final ArrayList<Controller> controllers = new ArrayList<>();
 
         private final String name;
         private final Type type;
@@ -233,7 +233,7 @@ public class Player {
             this.type = Type.fromName(type);
             this.activities = activities;
 
-            CONTROLLERS.add(this);
+            controllers.add(this);
         }
 
         // Read JSON data from file
@@ -258,7 +258,7 @@ public class Player {
          @return the number of loaded controllers
          */
         public static int getNumberOfPlayers() {
-            return CONTROLLERS.size();
+            return controllers.size();
         }
 
         /**
@@ -267,7 +267,7 @@ public class Player {
          @return the list of loaded controllers
          */
         public static ArrayList<Controller> getPlayersControllers() {
-            return CONTROLLERS;
+            return controllers;
         }
 
         /**
