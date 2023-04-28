@@ -243,12 +243,12 @@ public class Player {
          @param filePath the path to the JSON file
          */
         // Read JSON data from file
-        public static void loadFromJsonFile(String filePath) {
+        public static void loadFromJsonFile(String filePath) throws LoadException {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 mapper.readValue(new File(filePath), Controller[].class);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new LoadException(e);
             }
         }
 

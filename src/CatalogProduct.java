@@ -63,13 +63,12 @@ public class CatalogProduct {
      *
      * @param filePath the path of the JSON file
      */
-    public static void loadFromJsonFile(String filePath) {
+    public static void loadFromJsonFile(String filePath) throws LoadException {
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.readValue(new File(filePath), CatalogProduct[].class);
-
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new LoadException(e);
         }
     }
 
