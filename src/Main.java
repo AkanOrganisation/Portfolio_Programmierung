@@ -60,12 +60,12 @@ public class Main {
          */
         try{
             CatalogProduct.loadFromJsonFile(catalogFilePath);
-        } catch (LoadException e) {
+        } catch (LoadError e) {
             System.exit(1);
         }
         try {
             Player.Controller.loadFromJsonFile(playersFilePath);
-        } catch (LoadException e) {
+        } catch (LoadError e) {
             System.exit(1);
         }
 
