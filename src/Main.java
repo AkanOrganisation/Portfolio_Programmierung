@@ -25,7 +25,7 @@ public class Main {
     /**
      * The maximum number of rounds for the game.
      */
-    static int maxRounds = 5;
+    static int maxRounds = 50;
     /**
      * The file path of the catalog JSON file.
      */
@@ -58,8 +58,17 @@ public class Main {
         /*
          * Load catalog and players from file
          */
-        CatalogProduct.loadFromJsonFile(catalogFilePath);
-        Player.Controller.loadFromJsonFile(playersFilePath);
+        try{
+            CatalogProduct.loadFromJsonFile(catalogFilePath);
+        } catch (LoadException e) {
+            System.exit(1);
+        }
+        try {
+            Player.Controller.loadFromJsonFile(playersFilePath);
+        } catch (LoadException e) {
+            System.exit(1);
+        }
+
 
         /*
          * Set CountDown to the number of players
