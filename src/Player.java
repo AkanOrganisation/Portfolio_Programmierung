@@ -54,7 +54,7 @@ public class Player {
 
     private final History history;
 
-    private double priceTolerance = 10/100.0;
+    private final double priceTolerance;
 
     /**
      Constructs a player with the given name and type.
@@ -380,14 +380,17 @@ class Stock {
      @param catalogProduct the catalog product to remove products from
      @param quantity the quantity of products to remove
      */
-    public void removeProducts(CatalogProduct catalogProduct, int quantity) {
+    public int removeProducts(CatalogProduct catalogProduct, int quantity) {
         if (stock.containsKey(catalogProduct)) {
             List<CatalogProduct.Product> products = stock.get(catalogProduct);
             quantity = Math.min(products.size(), quantity);
             if (quantity > 0) {
                 products.subList(0, quantity).clear();
+                Log.getInstance().addMessage("Removed %d products of type %s from the stock".formatted(quantity, catalogProduct.getName()), Log.Level.DEBUG);
+                return quantity;
             }
         }
+        return 0;
     }
 
     /**
@@ -403,6 +406,7 @@ class Stock {
             CatalogProduct.Product product = new CatalogProduct.Product();
             products.add(product);
         }
+        Log.getInstance().addMessage("Added %d products of type %s to the stock".formatted(quantity, catalogProduct.getName()), Log.Level.DEBUG);
     }
 
     /**
