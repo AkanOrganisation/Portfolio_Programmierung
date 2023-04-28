@@ -44,8 +44,8 @@ interface Buy {
      * @param order the buy order to wait for
      * @throws InterruptedException if the thread is interrupted while waiting
      */
-    default void waitForBuyOrder(Order order) throws InterruptedException {
-        order.waitUntilCompleted(100, TimeUnit.MILLISECONDS);
+    default void waitForBuyOrder(Order order, int timeMilliseconds) throws InterruptedException {
+        order.waitUntilCompleted(timeMilliseconds, TimeUnit.MILLISECONDS);
     }
 }
 
@@ -95,7 +95,9 @@ interface Build extends Buy {
         if (!hasEnoughMaterials) {
             // Wait for the buy orders to complete
             while (buyOrders.size() > 0) {
-                waitForBuyOrder(buyOrders.get(0));
+                // todo: implement wait time calculation
+                // waitForBuyOrder(buyOrders.get(0), calculateWaitTime(player, product));
+                waitForBuyOrder(buyOrders.get(0), 20);
                 buyOrders.remove(0);
             }
         }
@@ -119,6 +121,9 @@ interface Build extends Buy {
             player.getStock().removeProducts(material, requiredQuantity * maxCanBuildQuantity);
         }
         player.getStock().addProducts(product, maxCanBuildQuantity);
+        if (maxCanBuildQuantity > 0){
+            Log.getInstance().addMessage(player.getName() + " built " + maxCanBuildQuantity + " " + product.getName() + "s", Log.Level.INFO);
+        }
     }
 
 }
@@ -146,10 +151,12 @@ interface Consume extends Buy {
 
         if (!(availableQuantity >= quantity)) {
             // Not enough stock, buy more and then consume
-            waitForBuyOrder(buy(player, product, quantity - availableQuantity, calculateMaxPricePerUnit(player, product)));
+            waitForBuyOrder(buy(player, product, quantity - availableQuantity, calculateMaxPricePerUnit(player, product)), 20);
         }
 
-        player.getStock().removeProducts(product, quantity);
+        int consumed = player.getStock().removeProducts(product, quantity);
+        if (consumed > 0)
+            Log.getInstance().addMessage(player.getName() + "consumed " + consumed + " " + product.getName() + "s", Log.Level.INFO);
     }
 }
 
@@ -197,6 +204,6 @@ interface Sell extends Build {
     }
 
     default double calculateMinPricePerUnit(Player player, CatalogProduct product) {
-        return product.getRecommendedPrice() * ( 1 - player.getPriceTolerance());
+        return product.getRecommendedPrice() * (1 - player.getPriceTolerance());
     }
 }
