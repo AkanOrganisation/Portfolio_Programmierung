@@ -64,7 +64,7 @@ public class CatalogProduct {
      *
      * @param filePath the path of the JSON file
      */
-    public static void loadFromJsonFile(String filePath) throws LoadException {
+    public static void loadFromJsonFile(String filePath) throws LoadError {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode rootNode = mapper.readTree(new File(filePath));
@@ -73,10 +73,10 @@ public class CatalogProduct {
             if (catalogNode != null) {
                 mapper.readValue(catalogNode.toString(), CatalogProduct[].class);
             } else {
-                throw new LoadException("The 'catalog' key is missing in the JSON file");
+                throw new LoadError("The 'catalog' key is missing in the JSON file");
             }
         } catch (IOException e) {
-            throw new LoadException(e);
+            throw new LoadError(e);
         }
     }
 

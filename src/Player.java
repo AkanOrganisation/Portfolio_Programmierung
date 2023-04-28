@@ -244,7 +244,7 @@ public class Player {
          @param filePath the path to the JSON file
          */
         // Read JSON data from file
-        public static void loadFromJsonFile(String filePath) throws LoadException {
+        public static void loadFromJsonFile(String filePath) throws LoadError {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 JsonNode rootNode = mapper.readTree(new File(filePath));
@@ -253,10 +253,10 @@ public class Player {
                 if (playersNode != null) {
                     mapper.readValue(playersNode.toString(), Controller[].class);
                 } else {
-                    throw new LoadException("The 'players' key is missing in the JSON file");
+                    throw new LoadError("The 'players' key is missing in the JSON file");
                 }
             } catch (IOException e) {
-                throw new LoadException(e);
+                throw new LoadError(e);
             }
         }
 
