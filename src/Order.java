@@ -134,7 +134,7 @@ public abstract class Order {
         private SellOrder(Player issuer, CatalogProduct item, int quantity, double minSellPrice) {
             super(issuer, item, quantity, minSellPrice);
             Market.getInstance().addSellOrder(this);
-            getIssuer().getHistory().addRecord(Main.getRound(), item, 0, 0, quantity, 0);
+            getIssuer().getHistory().addBuySellRecord(Main.getRound(), item, 0, 0, quantity, 0);
 
         }
 
@@ -184,8 +184,8 @@ public abstract class Order {
             super.issuer.getStock().removeProducts(getProduct(), soldQuantity);
             super.issuer.addMoney(totalPrice);
             super.quantity -= soldQuantity;
-            super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity, 0, 0);
-            Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, 0, soldQuantity, 0, 0);
+            super.issuer.getHistory().addBuySellRecord(super.issuer.getRound(), super.product, 0, soldQuantity, 0, 0);
+            Market.getInstance().getHistory().addBuySellRecord(super.issuer.getRound(), super.product, 0, soldQuantity, 0, 0);
             Log.getInstance().addMessage(super.issuer.getName() + " Sold " + soldQuantity + " units of " + super.product.getName() + " for " + totalPrice + " to " + partner.getType() + " " + partner.getName(), Log.Level.INFO);
 
             /*
@@ -217,7 +217,7 @@ public abstract class Order {
             super(issuer, item, quantity, maxPrice);
             super.priceUnit = calculatePrice(maxPrice);
             Market.getInstance().addBuyOrder(this);
-            getIssuer().getHistory().addRecord(Main.getRound(), item, 0, 0, 0, quantity);
+            getIssuer().getHistory().addBuySellRecord(Main.getRound(), item, 0, 0, 0, quantity);
 
         }
 
@@ -270,8 +270,8 @@ public abstract class Order {
             super.issuer.removeMoney(totalPrice);
             super.quantity -= boughtQuantity;
 
-            super.issuer.getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
-            Market.getInstance().getHistory().addRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
+            super.issuer.getHistory().addBuySellRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
+            Market.getInstance().getHistory().addBuySellRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
             Log.getInstance().addMessage(super.issuer.getName() + " bought " + boughtQuantity + " units of " + super.product.getName() + " for " + totalPrice + " from " + partner.getType() + " " + partner.getName(), Log.Level.INFO);
             /*
              * check if the order is complete
