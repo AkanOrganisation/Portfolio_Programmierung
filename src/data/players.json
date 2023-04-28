@@ -1,242 +1,246 @@
-[
-  {
-    "name": "Siemens",
-    "type": "manufacturer",
-    "priceTolerance": 0.2,
-    "activities": [
-      {
-        "type": "Sell",
-        "product": "Computer Desk",
-        "min": 2.0,
-        "max": 5.0
-      },
-      {
-        "type": "Sell",
-        "product": "Bed",
-        "min": 2.0,
-        "max": 3.0
-      },
-      {
-        "type": "Sell",
-        "product": "Chair",
-        "min": 4.0,
-        "max": 10.0
-      },
-      {
-        "type": "Sell",
-        "product": "Table",
-        "min": 1.0,
-        "max": 2.0
-      }
-    ]
-  },
-  {
-    "name": "BASF",
-    "type": "supplier",
-    "priceTolerance": 0.11,
-    "activities": [
-      {
-        "type": "Sell",
-        "product": "Wood",
-        "min": 10.0,
-        "max": 20.0
-      },
-      {
-        "type": "Sell",
-        "product": "Metal",
-        "min": 15.0,
-        "max": 20.0
-      },
-      {
-        "type": "Sell",
-        "product": "Circuit Board",
-        "min": 25.0,
-        "max": 35.0
-      }
-    ]
-  },
-  {
-    "name": "Bayer",
-    "type": "consumer",
-    "activities": [
-      {
-        "type": "Consume",
-        "product": "Lamp",
-        "min": 1.0,
-        "max": 3.0
-      },
-      {
-        "type": "Consume",
-        "product": "Bookshelf",
-        "min": 0.0,
-        "max": 2.0
-      },
-      {
-        "type": "Consume",
-        "product": "Table",
-        "min": 1.0,
-        "max": 3.0
-      },
-      {
-        "type": "Consume",
-        "product": "Chair",
-        "min": 5.0,
-        "max": 10.0
-      },
-      {
-        "type": "Consume",
-        "product": "Computer Desk",
-        "min": 4.0,
-        "max": 5.0
-      },
-      {
-        "type": "Consume",
-        "product": "Bed",
-        "min": 0.0,
-        "max": 2.0
-      }
-    ]
-  },
-  {
-    "name": "LG",
-    "type": "manufacturer",
-    "priceTolerance": 0.15,
-    "activities": [
-      {
-        "type": "Sell",
-        "product": "TV Stand",
-        "min": 3.0,
-        "max": 6.0
-      },
-      {
-        "type": "Sell",
-        "product": "Wardrobe",
-        "min": 0.0,
-        "max": 1.0
-      },
-      {
-        "type": "Sell",
-        "product": "Bookshelf",
-        "min": 0.0,
-        "max": 1.0
-      },
-      {
-        "type": "Sell",
-        "product": "Lamp",
-        "min": 20.0,
-        "max": 40.0
-      }
-    ]
-  },
-  {
-    "name": "Dow",
-    "type": "supplier",
-    "priceTolerance": 0.5,
-    "activities": [
-      {
-        "type": "Sell",
-        "product": "Wood",
-        "min": 9.0,
-        "max": 14.0
-      },
-      {
-        "type": "Sell",
-        "product": "Metal",
-        "min": 18.0,
-        "max": 25.0
-      },
-      {
-        "type": "Sell",
-        "product": "Circuit Board",
-        "min": 28.0,
-        "max": 38.0
-      }
-    ]
-  },
-  {
-    "name": "IKEA",
-    "type": "manufacturer",
-    "priceTolerance": 0.2,
-    "activities": [
-      {
-        "type": "Sell",
-        "product": "Sofa",
-        "min": 1.0,
-        "max": 4.0
-      },
-      {
-        "type": "Sell",
-        "product": "Coffee Table",
-        "min": 3.0,
-        "max": 4.0
-      },
-      {
-        "type": "Sell",
-        "product": "Kitchen Cabinet",
-        "min": 1.0,
-        "max": 6.0
-      }
-    ]
-  },
-  {
-    "name": "Ashley",
-    "type": "consumer",
-    "activities": [
-      {
-        "type": "Consume",
-        "product": "Sofa",
-        "min": 1.0,
-        "max": 3.0
-      },
-      {
-        "type": "Consume",
-        "product": "Coffee Table",
-        "min": 0.0,
-        "max": 1.0
-      },
-      {
-        "type": "Consume",
-        "product": "Kitchen Cabinet",
-        "min": 1.0,
-        "max": 5.0
-      },
-      {
-        "type": "Consume",
-        "product": "TV Stand",
-        "min": 1.0,
-        "max": 2.0
-      },
-      {
-        "type": "Consume",
-        "product": "Wardrobe",
-        "min": 0.0,
-        "max": 1.0
-      },
-      {
-        "type": "Consume",
-        "product": "Bookshelf",
-        "min": 2.0,
-        "max": 3.0
-      },
-      {
-        "type": "Consume",
-        "product": "Lamp",
-        "min": 0.0,
-        "max": 6.0
-      }
-    ]
-  },
-  {
-    "name": "FabricLand",
-    "type": "supplier",
-    "priceTolerance": 0.11,
-    "activities": [
-      {
-        "type": "Sell",
-        "product": "Fabric",
-        "min": 10.0,
-        "max": 12.0
-      }
-    ]
-  }
-]
+{
+  "_description": "This JSON object represents the players in a game, including manufacturers, suppliers, and consumers. Each player has a name, type, price tolerance, and a list of activities they perform, such as selling or consuming products. The activities contain details about the product and its min and max quantity.",
+  "players": [
+    {
+      "name": "Siemens",
+      "type": "manufacturer",
+      "priceTolerance": 0.2,
+      "activities": [
+        {
+          "type": "Sell",
+          "product": "Computer Desk",
+          "min": 2.0,
+          "max": 5.0
+        },
+        {
+          "type": "Sell",
+          "product": "Bed",
+          "min": 2.0,
+          "max": 3.0
+        },
+        {
+          "type": "Sell",
+          "product": "Chair",
+          "min": 4.0,
+          "max": 10.0
+        },
+        {
+          "type": "Sell",
+          "product": "Table",
+          "min": 1.0,
+          "max": 2.0
+        }
+      ]
+    },
+    {
+      "name": "BASF",
+      "type": "supplier",
+      "priceTolerance": 0.11,
+      "activities": [
+        {
+          "type": "Sell",
+          "product": "Wood",
+          "min": 10.0,
+          "max": 20.0
+        },
+        {
+          "type": "Sell",
+          "product": "Metal",
+          "min": 15.0,
+          "max": 20.0
+        },
+        {
+          "type": "Sell",
+          "product": "Circuit Board",
+          "min": 25.0,
+          "max": 35.0
+        }
+      ]
+    },
+    {
+      "name": "Bayer",
+      "type": "consumer",
+      "activities": [
+        {
+          "type": "Consume",
+          "product": "Lamp",
+          "min": 1.0,
+          "max": 3.0
+        },
+        {
+          "type": "Consume",
+          "product": "Bookshelf",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "type": "Consume",
+          "product": "Table",
+          "min": 1.0,
+          "max": 3.0
+        },
+        {
+          "type": "Consume",
+          "product": "Chair",
+          "min": 5.0,
+          "max": 10.0
+        },
+        {
+          "type": "Consume",
+          "product": "Computer Desk",
+          "min": 4.0,
+          "max": 5.0
+        },
+        {
+          "type": "Consume",
+          "product": "Bed",
+          "min": 0.0,
+          "max": 2.0
+        }
+      ]
+    },
+    {
+      "name": "LG",
+      "type": "manufacturer",
+      "priceTolerance": 0.15,
+      "activities": [
+        {
+          "type": "Sell",
+          "product": "TV Stand",
+          "min": 3.0,
+          "max": 6.0
+        },
+        {
+          "type": "Sell",
+          "product": "Wardrobe",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "type": "Sell",
+          "product": "Bookshelf",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "type": "Sell",
+          "product": "Lamp",
+          "min": 20.0,
+          "max": 40.0
+        }
+      ]
+    },
+    {
+      "name": "Dow",
+      "type": "supplier",
+      "priceTolerance": 0.5,
+      "activities": [
+        {
+          "type": "Sell",
+          "product": "Wood",
+          "min": 9.0,
+          "max": 14.0
+        },
+        {
+          "type": "Sell",
+          "product": "Metal",
+          "min": 18.0,
+          "max": 25.0
+        },
+        {
+          "type": "Sell",
+          "product": "Circuit Board",
+          "min": 28.0,
+          "max": 38.0
+        }
+      ]
+    },
+    {
+      "name": "IKEA",
+      "type": "manufacturer",
+      "priceTolerance": 0.2,
+      "activities": [
+        {
+          "type": "Sell",
+          "product": "Sofa",
+          "min": 1.0,
+          "max": 4.0
+        },
+        {
+          "type": "Sell",
+          "product": "Coffee Table",
+          "min": 3.0,
+          "max": 4.0
+        },
+        {
+          "type": "Sell",
+          "product": "Kitchen Cabinet",
+          "min": 1.0,
+          "max": 6.0
+        }
+      ]
+    },
+    {
+      "name": "Ashley",
+      "type": "consumer",
+      "activities": [
+        {
+          "type": "Consume",
+          "product": "Sofa",
+          "min": 1.0,
+          "max": 3.0
+        },
+        {
+          "type": "Consume",
+          "product": "Coffee Table",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "type": "Consume",
+          "product": "Kitchen Cabinet",
+          "min": 1.0,
+          "max": 5.0
+        },
+        {
+          "type": "Consume",
+          "product": "TV Stand",
+          "min": 1.0,
+          "max": 2.0
+        },
+        {
+          "type": "Consume",
+          "product": "Wardrobe",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "type": "Consume",
+          "product": "Bookshelf",
+          "min": 2.0,
+          "max": 3.0
+        },
+        {
+          "type": "Consume",
+          "product": "Lamp",
+          "min": 0.0,
+          "max": 6.0
+        }
+      ]
+    },
+    {
+      "name": "FabricLand",
+      "type": "supplier",
+      "priceTolerance": 0.11,
+      "activities": [
+        {
+          "type": "Sell",
+          "product": "Fabric",
+          "min": 10.0,
+          "max": 12.0
+        }
+      ]
+    }
+  ]
+}
+

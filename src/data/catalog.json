@@ -1,196 +1,199 @@
-[
-  {
-    "name": "Wood",
-    "recommendedPrice": 10.0,
-    "components": []
-  },
-  {
-    "name": "Metal",
-    "recommendedPrice": 20.0,
-    "components": []
-  },
-  {
-    "name": "Circuit Board",
-    "recommendedPrice": 30.0,
-    "components": []
-  },
-  {
-    "name": "Fabric",
-    "recommendedPrice": 5.0,
-    "components": []
-  },
-  {
-    "name": "Chair",
-    "recommendedPrice": 100.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 4
-      },
-      {
-        "name": "Metal",
-        "quantity": 2
-      }
-    ]
-  },
-  {
-    "name": "Table",
-    "recommendedPrice": 200.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 6
-      },
-      {
-        "name": "Metal",
-        "quantity": 4
-      }
-    ]
-  },
-  {
-    "name": "Bed",
-    "recommendedPrice": 300.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 8
-      },
-      {
-        "name": "Metal",
-        "quantity": 6
-      }
-    ]
-  },
-  {
-    "name": "Computer Desk",
-    "recommendedPrice": 150.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 2
-      },
-      {
-        "name": "Metal",
-        "quantity": 4
-      },
-      {
-        "name": "Circuit Board",
-        "quantity": 1
-      }
-    ]
-  },
-  {
-    "name": "Bookshelf",
-    "recommendedPrice": 80.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 4
-      },
-      {
-        "name": "Metal",
-        "quantity": 2
-      }
-    ]
-  },
-  {
-    "name": "Lamp",
-    "recommendedPrice": 50.0,
-    "components": [
-      {
-        "name": "Metal",
-        "quantity": 1
-      },
-      {
-        "name": "Circuit Board",
-        "quantity": 2
-      }
-    ]
-  },
-  {
-    "name": "Coffee Table",
-    "recommendedPrice": 120.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 4
-      },
-      {
-        "name": "Metal",
-        "quantity": 2
-      }
-    ]
-  },
-  {
-    "name": "Sofa",
-    "recommendedPrice": 250.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 10
-      },
-      {
-        "name": "Metal",
-        "quantity": 4
-      },
-      {
-        "name": "Fabric",
-        "quantity": 5
-      }
-    ]
-  },
-  {
-    "name": "TV Stand",
-    "recommendedPrice": 160.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 4
-      },
-      {
-        "name": "Metal",
-        "quantity": 4
-      },
-      {
-        "name": "Circuit Board",
-        "quantity": 1
-      }
-    ]
-  },
-  {
-    "name": "Wardrobe",
-    "recommendedPrice": 400.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 12
-      },
-      {
-        "name": "Metal",
-        "quantity": 6
-      },
-      {
-        "name": "Circuit Board",
-        "quantity": 2
-      }
-    ]
-  },
-  {
-    "name": "Kitchen Cabinet",
-    "recommendedPrice": 350.0,
-    "components": [
-      {
-        "name": "Wood",
-        "quantity": 10
-      },
-      {
-        "name": "Metal",
-        "quantity": 5
-      },
-      {
-        "name": "Circuit Board",
-        "quantity": 1
-      }
-    ]
-  }
-]
+{
+  "_description": "This is the catalog of products and raw materials available in the market. Each element in the catalog contains the following keys: 'name' for the name of the product or raw material, 'price' for the price per unit, and 'components' for components of the product. Components of a raw material is an empty list.",
+  "catalog": [
+    {
+      "name": "Wood",
+      "recommendedPrice": 10.0,
+      "components": []
+    },
+    {
+      "name": "Metal",
+      "recommendedPrice": 20.0,
+      "components": []
+    },
+    {
+      "name": "Circuit Board",
+      "recommendedPrice": 30.0,
+      "components": []
+    },
+    {
+      "name": "Fabric",
+      "recommendedPrice": 5.0,
+      "components": []
+    },
+    {
+      "name": "Chair",
+      "recommendedPrice": 100.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 4
+        },
+        {
+          "name": "Metal",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "name": "Table",
+      "recommendedPrice": 200.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 6
+        },
+        {
+          "name": "Metal",
+          "quantity": 4
+        }
+      ]
+    },
+    {
+      "name": "Bed",
+      "recommendedPrice": 300.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 8
+        },
+        {
+          "name": "Metal",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "name": "Computer Desk",
+      "recommendedPrice": 150.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 2
+        },
+        {
+          "name": "Metal",
+          "quantity": 4
+        },
+        {
+          "name": "Circuit Board",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "Bookshelf",
+      "recommendedPrice": 80.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 4
+        },
+        {
+          "name": "Metal",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "name": "Lamp",
+      "recommendedPrice": 50.0,
+      "components": [
+        {
+          "name": "Metal",
+          "quantity": 1
+        },
+        {
+          "name": "Circuit Board",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "name": "Coffee Table",
+      "recommendedPrice": 120.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 4
+        },
+        {
+          "name": "Metal",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "name": "Sofa",
+      "recommendedPrice": 250.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 10
+        },
+        {
+          "name": "Metal",
+          "quantity": 4
+        },
+        {
+          "name": "Fabric",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "TV Stand",
+      "recommendedPrice": 160.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 4
+        },
+        {
+          "name": "Metal",
+          "quantity": 4
+        },
+        {
+          "name": "Circuit Board",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "Wardrobe",
+      "recommendedPrice": 400.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 12
+        },
+        {
+          "name": "Metal",
+          "quantity": 6
+        },
+        {
+          "name": "Circuit Board",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "name": "Kitchen Cabinet",
+      "recommendedPrice": 350.0,
+      "components": [
+        {
+          "name": "Wood",
+          "quantity": 10
+        },
+        {
+          "name": "Metal",
+          "quantity": 5
+        },
+        {
+          "name": "Circuit Board",
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+}
