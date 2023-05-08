@@ -134,7 +134,7 @@ public class Market implements Runnable {
                     this.wait(100);
                     if (gotNewOrders()) {
                         setNewOrders(false);
-                        /Match the orders */
+                        //Match the orders */
                         // Log.getInstance().addMessage("got new orders to match");
                         matchOrders();
                     } else {
