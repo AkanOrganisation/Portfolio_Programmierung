@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
 /**
- *
  * The Main class represents the entry point of the program. It initializes the
  * game by loading the catalog and players from JSON files, starting the market
  * thread, and creating player threads. The class also manages the game's rounds
@@ -55,10 +54,10 @@ public class Main {
      * @throws InterruptedException if any thread is interrupted
      */
     public static void main(String[] args) throws InterruptedException {
-        /*
+        /**
          * Load catalog and players from file
          */
-        try{
+        try {
             CatalogProduct.loadFromJsonFile(catalogFilePath);
         } catch (LoadError e) {
             System.exit(1);
@@ -70,20 +69,20 @@ public class Main {
         }
 
 
-        /*
+        /**
          * Set CountDown to the number of players
          */
         System.out.println("Numbers of players:" + Player.Controller.getNumberOfPlayers());
         Synchronizer.setNumberOfPlayers(Player.Controller.getNumberOfPlayers());
 
-        /*
+        /**
          * Starts the market thread
          */
         Thread marketThread = new Thread(Market.getInstance(), "MarketThread");
         marketThread.start();
         threads.add(marketThread);
 
-        /*
+        /**
          * Starts the player thread
          */
         for (Player.Controller playerController : Player.Controller.getPlayersControllers()) {
@@ -92,58 +91,59 @@ public class Main {
             threads.add(playerControllerThread);
         }
 
-        /*
+        /**
          * Will wait that all players are loaded and give out as message
          */
         System.out.println("Waiting for all players to load");
         Synchronizer.waitAllPlayersLoad();
         System.out.println("All players loaded");
 
-        /*
+        /**
          * Loop through rounds
          */
         while (currentRound < maxRounds) {
             System.out.println("Round " + (currentRound + 1) + " started");
 
-            /*
+            /**
              * Notify all players that a new round has started
              */
             Synchronizer.setRoundStarted(Player.getNumberOfActivePlayers());
 
-            /*
+            /**
              * Wait for all players to finish their turn
              */
             Synchronizer.waitForPlayers();
 
-            /*
+            /**
              * Wait for Market to finish this round
              */
             Synchronizer.waitForMarket();
 
+            //TODO: ????
             /*
              * Clear the market
              */
             //Market.getInstance().clearOrders();
 
-            /*
+            /**
              * Print round's log
              */
             Log.getInstance().printMessagesForRound(currentRound);
 
-            /*
+            /**
              * All players finished their turn, end set the round as finished
              */
             Log.getInstance().setRound(++currentRound);
             Synchronizer.setRoundFinished();
         }
 
-        /*
+        /**
          * Notify all that the game is finished
          */
         System.out.println("Game finished");
         Synchronizer.setGameFinished();
 
-        /*
+        /**
          * Will Stop all threads and gives out that the game is closed for now
          */
         for (Thread thread : threads)
