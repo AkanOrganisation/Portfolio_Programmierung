@@ -51,6 +51,7 @@ public class Synchronizer {
 
     /**
      * Blocked until the game is started.
+     *
      * @throws InterruptedException when waiting is interrupted.
      */
     public static void waitGameStart() throws InterruptedException {
@@ -59,6 +60,7 @@ public class Synchronizer {
 
     /**
      * Checks if the game has been started.
+     *
      * @return true if the game was started, false otherwise.
      */
     public static boolean gameStarted() {
@@ -74,6 +76,7 @@ public class Synchronizer {
 
     /**
      * Checks if the game was terminated.
+     *
      * @return true if the game has ended; false otherwise.
      */
     public static boolean gameFinished() {
@@ -82,26 +85,28 @@ public class Synchronizer {
 
     /**
      * Sets the start of a new round and synchronizes the synchronization mechanism for this round.
+     *
      * @param numberOfPlayers the number of players in this round.
      */
     public static void setRoundStarted(int numberOfPlayers) {
-        // Prepare new round
-        // Reset sync latches
+        /** Prepare new round*/
+        /** Reset sync latches */
         playersFinishedRound = new CountDownLatch(numberOfPlayers);
         marketFinishedRound = new CountDownLatch(1);
         roundFinished = new CountDownLatch(1);
 
-        // Start the game in not started
+        /** Start the game in not started*/
         if (!gameStarted()) {
             setGameStarted();
         }
 
-        // start the round
+        /** start the round*/
         roundStarted.countDown();
     }
 
     /**
      * Blocks the current thread until the round is started.
+     *
      * @throws InterruptedException if the thread is interrupted while waiting.
      */
     public static void waitRoundStarted() throws InterruptedException {
@@ -110,6 +115,7 @@ public class Synchronizer {
 
     /**
      * Signals the end of the current round and synchronizes the synchronization mechanism for the next round.
+     *
      * @throws InterruptedException if the thread is interrupted during execution.
      */
     public static void setRoundFinished() throws InterruptedException {
@@ -120,6 +126,7 @@ public class Synchronizer {
 
     /**
      * Blocks the current thread until the current round is finished.
+     *
      * @throws InterruptedException if the thread is interrupted while waiting.
      */
     public static void waitRoundFinished() throws InterruptedException {
@@ -128,6 +135,7 @@ public class Synchronizer {
 
     /**
      * Blocks the current thread until all players have completed the current round.
+     *
      * @throws InterruptedException if the thread is interrupted while waiting.
      */
     public static void waitForPlayers() throws InterruptedException {
@@ -136,6 +144,7 @@ public class Synchronizer {
 
     /**
      * Blocks the current thread until the market completes the current round.
+     *
      * @throws InterruptedException if the thread is interrupted while waiting.
      */
     public static void waitForMarket() throws InterruptedException {
@@ -150,31 +159,34 @@ public class Synchronizer {
     }
 
     /**
-
-     Decrements the count of the playersFinishedRound latch, indicating that a player has finished the current round.
+     * Decrements the count of the playersFinishedRound latch, indicating that a player has finished the current round.
      */
     public static void notifyPlayerLoaded() {
         allPlayersLoaded.countDown();
     }
 
-    /** Waits until all players have finished loading.
-     @throws InterruptedException if the current thread is interrupted while waiting
+    /**
+     * Waits until all players have finished loading.
+     *
+     * @throws InterruptedException if the current thread is interrupted while waiting
      */
     public static void notifyPlayerFinishedRound() {
         playersFinishedRound.countDown();
     }
 
-    /** Waits until all players have finished loading.
-     @throws InterruptedException if the current thread is interrupted while waiting
+    /**
+     * Waits until all players have finished loading.
+     *
+     * @throws InterruptedException if the current thread is interrupted while waiting
      */
     public static void waitAllPlayersLoad() throws InterruptedException {
         allPlayersLoaded.await();
     }
 
     /**
-
-     Sets the number of players and initializes the allPlayersLoaded latch with the given count.
-     @param size the number of players
+     * Sets the number of players and initializes the allPlayersLoaded latch with the given count.
+     *
+     * @param size the number of players
      */
     public static void setNumberOfPlayers(int size) {
         allPlayersLoaded = new CountDownLatch(size);
