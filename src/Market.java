@@ -117,7 +117,7 @@ public class Market implements Runnable {
      */
     @Override
     public void run() {
-        // Wait until the game starts
+        /**Wait until the game starts*/
         try {
             Synchronizer.waitGameStart();
         } catch (InterruptedException e) {
@@ -125,16 +125,16 @@ public class Market implements Runnable {
             throw new RuntimeException(e);
         }
 
-        // Play the game
+        /** Play the game*/
         while (!(Synchronizer.gameFinished())) {
             synchronized (this) {
                 try {
-                    // wait for a new order to be added
+                    /**wait for a new order to be added*/
                     // Log.getInstance().addMessage("waiting for orders");
                     this.wait(100);
                     if (gotNewOrders()) {
                         setNewOrders(false);
-                        // Match the orders
+                        /Match the orders */
                         // Log.getInstance().addMessage("got new orders to match");
                         matchOrders();
                     } else {
@@ -166,12 +166,11 @@ public class Market implements Runnable {
             SortedSet<Order> buySet = buyOrders.get(product);
             SortedSet<Order> sellSet = sellOrders.get(product);
             if (buySet == null || sellSet == null) {
-                // no buy or sell orders for this product
+                /**no buy or sell orders for this product*/
                 return;
             }
-            while (!buySet.isEmpty() && !sellSet.isEmpty()
-                    && buySet.first().getPriceUnit() >= sellSet.first().getPriceUnit()) {
-                // execute a trade
+            while (!buySet.isEmpty() && !sellSet.isEmpty() && buySet.first().getPriceUnit() >= sellSet.first().getPriceUnit()) {
+                /** execute a trade*/
                 Order buyOrder = buySet.first();
                 Order sellOrder = sellSet.first();
                 int quantity = Math.min(buyOrder.getQuantity(), sellOrder.getQuantity());
@@ -179,8 +178,7 @@ public class Market implements Runnable {
                 sellOrder.execute(buyOrder.getIssuer(), quantity);
                 double marketRevenue = Math.floor(quantity * Math.abs(sellOrder.getPriceUnit() - buyOrder.getPriceUnit()) * 100) / 100.0;
                 marketRevenue(marketRevenue);
-                Log.getInstance().addMessage("Trade executed: " + quantity + " " + product.getName() + " from "
-                        + sellOrder.getIssuer().getName() + " to " + buyOrder.getIssuer().getName() + ". Market revenue: " + marketRevenue, Log.Level.INFO);
+                Log.getInstance().addMessage("Trade executed: " + quantity + " " + product.getName() + " from " + sellOrder.getIssuer().getName() + " to " + buyOrder.getIssuer().getName() + ". Market revenue: " + marketRevenue, Log.Level.INFO);
                 if (buyOrder.isComplete()) {
                     buySet.remove(buyOrder);
                 }
