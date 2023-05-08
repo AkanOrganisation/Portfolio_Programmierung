@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * The CatalogProduct class represents a product in a catalog. It contains
  * information about the product's name, recommended price, and components that
  * make up the product. It also provides static methods to retrieve products by
@@ -55,7 +54,7 @@ public class CatalogProduct {
         this.recommendedPrice = recommendedPrice;
         this.components = components;
 
-        // Add the newly created instance to the catalog
+        /**Add the newly created instance to the catalog*/
         catalog.add(this);
     }
 
@@ -85,7 +84,7 @@ public class CatalogProduct {
      *
      * @param productName the name of the product to retrieve
      * @return The CatalogProduct instance with the specified name, or null if no
-     *         such product exists.
+     * such product exists.
      */
     public static CatalogProduct getProductByName(String productName) {
         return catalog.stream().filter(product -> product.name.equals(productName.toLowerCase())).findFirst()
@@ -97,7 +96,7 @@ public class CatalogProduct {
      *
      * @param id the ID of the product to retrieve
      * @return The CatalogProduct instance with the specified ID, or null if no such
-     *         product exists.
+     * product exists.
      */
     public static CatalogProduct getProductById(int id) {
         return catalog.stream().filter(product -> product.id == id).findFirst().orElse(null);
@@ -164,7 +163,7 @@ public class CatalogProduct {
         /**
          * Constructor for Component class.
          *
-         * @param name       the Name of the product
+         * @param name     the Name of the product
          * @param quantity of the selected products
          */
         @JsonCreator
@@ -204,7 +203,6 @@ public class CatalogProduct {
 
         /**
          * Constructor for Product class.
-         *
          */
         public Product() {
             this.id = nextId;
