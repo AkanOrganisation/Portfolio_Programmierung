@@ -78,21 +78,21 @@ public class Activity implements Buy, Sell, Build, Consume {
         }
         this.finished = true;
     }
-/**
- * Returns a boolean representing whether the Activity has finished executing.
- *
- * @return true if the Activity has finished executing, false otherwise
- */
+
+    /**
+     * Returns a boolean representing whether the Activity has finished executing.
+     *
+     * @return true if the Activity has finished executing, false otherwise
+     */
 
     public boolean isFinished() {
         return this.finished;
     }
 
     /**
-
-     This class represents an enumerated type of activity types that can be performed.
-     The activity types are BUY, SELL, BUILD, and CONSUME.
-     This class also contains a static method to convert a string representation of the activity type to its corresponding enumeration value.
+     * This class represents an enumerated type of activity types that can be performed.
+     * The activity types are BUY, SELL, BUILD, and CONSUME.
+     * This class also contains a static method to convert a string representation of the activity type to its corresponding enumeration value.
      */
     public enum ActivityType {
         BUY,
@@ -101,10 +101,11 @@ public class Activity implements Buy, Sell, Build, Consume {
         CONSUME;
 
         /**
-         This static method converts a string representation of an activity type to its corresponding enumeration value.
-         @param name a string representation of the activity type to be converted.
-         @return the corresponding enumeration value of the activity type.
-         @throws IllegalArgumentException if the string representation does not match any of the defined activity types.
+         * This static method converts a string representation of an activity type to its corresponding enumeration value.
+         *
+         * @param name a string representation of the activity type to be converted.
+         * @return the corresponding enumeration value of the activity type.
+         * @throws IllegalArgumentException if the string representation does not match any of the defined activity types.
          */
         public static ActivityType fromName(String name) {
             for (ActivityType type : ActivityType.values()) {

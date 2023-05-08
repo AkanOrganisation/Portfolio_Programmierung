@@ -327,21 +327,21 @@ public class Player {
              @param player the player participating in the game
              @throws RuntimeException if an interruption occurs during the waiting period for a new round and the game is not finished
              */
-            // Play the game until finished
+            /**Play the game until finished*/
             while (!Synchronizer.gameFinished()) {
                 try {
-                    // Wait for a new round
+                    /**Wait for a new round*/
                     Synchronizer.waitRoundStarted();
 
-                    // Play the round
+                    /** Play the round*/
                     player.log("Player %s starting a new round".formatted(this.name), Log.Level.DEBUG);
                     player.playRound();
 
-                    // Mark turn as finished
+                    /** Mark turn as finished*/
                     Synchronizer.notifyPlayerFinishedRound();
                     player.log("Player %s finished the round".formatted(this.name), Log.Level.DEBUG);
 
-                    // Wait for round's end
+                    /** Wait for round's end*/
                     Synchronizer.waitRoundFinished();
 
                 } catch (InterruptedException e) {
@@ -385,7 +385,7 @@ class Stock {
     public int removeProducts(CatalogProduct catalogProduct, int quantity) {
         if (stock.containsKey(catalogProduct)) {
             List<CatalogProduct.Product> products = stock.get(catalogProduct);
-            // Get lock on the list of products
+            /** Get lock on the list of products*/
             synchronized (products) {
                 quantity = Math.min(products.size(), quantity);
                 if (quantity > 0) {
