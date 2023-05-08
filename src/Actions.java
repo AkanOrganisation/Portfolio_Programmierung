@@ -67,14 +67,14 @@ interface Build extends Buy {
         List<CatalogProduct.Component> components = product.getComponents();
         Map<CatalogProduct, Integer> requiredMaterials = new HashMap<>();
 
-        // Count the required quantity of each component
+        /**Count the required quantity of each component*/
         for (CatalogProduct.Component component : components) {
             CatalogProduct material = component.getProduct();
             int requiredQuantity = component.getQuantity() * quantity;
             requiredMaterials.merge(material, requiredQuantity, Integer::sum);
         }
 
-        // Check if the player has enough materials to build the product
+        /**Check if the player has enough materials to build the product*/
         Map<CatalogProduct, Integer> availableMaterials = player.getStock().getProductQuantities();
         boolean hasEnoughMaterials = true;
         ArrayList<Order> buyOrders = new ArrayList<>();
@@ -83,26 +83,24 @@ interface Build extends Buy {
             int requiredQuantity = entry.getValue();
             int availableQuantity = availableMaterials.getOrDefault(material, 0);
             if (availableQuantity < requiredQuantity) {
-                // calculate the maximum price to pay for the material
+                /**calculate the maximum price to pay for the material*/
                 double maxBuyPrice = product.getComponentsPrice(material) / product.getComponentsPrice() * product.getRecommendedPrice();
                 //System.out.println("maxBuyPrice: " + maxBuyPrice + " for " + material.getName() + " for " + product.getName() + " with components price: " + product.getComponentsPrice(material) + " and recommended price: " + product.getRecommendedPrice());
-                // Not enough materials, buy more and then build
+                /**Not enough materials, buy more and then build*/
                 buyOrders.add(buy(player, material, requiredQuantity - availableQuantity, maxBuyPrice));
                 hasEnoughMaterials = false;
             }
         }
 
         if (!hasEnoughMaterials) {
-            // Wait for the buy orders to complete
+            /** Wait for the buy orders to complete*/
             while (buyOrders.size() > 0) {
-                // todo: implement wait time calculation
-                // waitForBuyOrder(buyOrders.get(0), calculateWaitTime(player, product));
                 waitForBuyOrder(buyOrders.get(0), 20);
                 buyOrders.remove(0);
             }
         }
 
-        // Calculate how many products can be built
+        /**Calculate how many products can be built*/
         int maxCanBuildQuantity = Integer.MAX_VALUE;
         for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
             CatalogProduct material = entry.getKey();
@@ -113,15 +111,14 @@ interface Build extends Buy {
         if (maxCanBuildQuantity == Integer.MAX_VALUE) {
             return;
         }
-        // Remove the required materials from the player's stock and add the built
-        // product
+        /** Remove the required materials from the player's stock and add the built product */
         for (Map.Entry<CatalogProduct, Integer> entry : requiredMaterials.entrySet()) {
             CatalogProduct material = entry.getKey();
             int requiredQuantity = entry.getValue();
             player.getStock().removeProducts(material, requiredQuantity * maxCanBuildQuantity);
         }
         player.getStock().addProducts(product, maxCanBuildQuantity);
-        if (maxCanBuildQuantity > 0){
+        if (maxCanBuildQuantity > 0) {
             Log.getInstance().addMessage(player.getName() + " built " + maxCanBuildQuantity + " " + product.getName() + "s", Log.Level.INFO);
         }
     }
@@ -150,7 +147,7 @@ interface Consume extends Buy {
         int availableQuantity = products.size();
 
         if (!(availableQuantity >= quantity)) {
-            // Not enough stock, buy more and then consume
+            /** Not enough stock, buy more and then consume*/
             waitForBuyOrder(buy(player, product, quantity - availableQuantity, calculateMaxPricePerUnit(player, product)), 20);
         }
 
@@ -170,34 +167,30 @@ interface Consume extends Buy {
  * smaller.
  */
 interface Sell extends Build {
-    /*
+    /**
      * Sells a certain quantity of a CatalogProduct from a player's stock.
      *
-     * @param player the player who wants to sell the product
-     *
-     * @param product the product to be sold
-     *
+     * @param player   the player who wants to sell the product
+     * @param product  the product to be sold
      * @param quantity the quantity of the product to sell
-     *
      * @throws InterruptedException if the thread is interrupted while waiting for a
-     * build order to complete
+     *                              build order to complete
      */
     default void sell(Player player, CatalogProduct product, int quantity) throws InterruptedException {
         List<CatalogProduct.Product> products = player.getStock().getProducts(product);
         int availableQuantity = products.size();
 
         if (!(availableQuantity >= quantity)) {
-            // Not enough products in stock, try to build
+            /** Not enough products in stock, try to build*/
             int quantityToBuild = quantity - availableQuantity;
             build(player, product, quantityToBuild);
 
-            // Get the updated quantity of available products
+            /** Get the updated quantity of available products*/
             products = player.getStock().getProducts(product);
             availableQuantity = products.size();
 
         }
-        // Actions.Sell the requested quantity of products or all the available
-        // products, whichever is smaller
+        /**Actions.Sell the requested quantity of products or all the available. Products, whichever is smaller*/
         int quantityToSell = Math.min(quantity, availableQuantity);
         if (quantityToSell > 0)
             Order.newSellOrder(player, product, quantityToSell, calculateMinPricePerUnit(player, product));
