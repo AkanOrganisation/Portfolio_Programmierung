@@ -153,13 +153,13 @@ public abstract class Order {
 
             double recommendedPrice = getProduct().getRecommendedPrice();
 
-            // Adjust the price based on the player ratio
+            /**Adjust the price based on the player ratio*/
             if (Double.isNaN(playerRatio)) {
                 return recommendedPrice;
             }
             double quantityFactor = playerDesiredQuantityLastRound > 0 ? playerSoldPreviousRound / playerDesiredQuantityLastRound : 0;
 
-            double adjustedPrice = recommendedPrice * (1 + playerRatio/10 - quantityFactor);
+            double adjustedPrice = recommendedPrice * (1 + playerRatio / 10 - quantityFactor);
 
             // Round the price to cents
             adjustedPrice = Math.floor(adjustedPrice * 100) / 100.0;
@@ -178,7 +178,7 @@ public abstract class Order {
         public void execute(Player partner, int soldQuantity) {
             double totalPrice = soldQuantity * getPriceUnit();
 
-            /*
+            /**
              * Reduce stock quantity and increase player's money
              */
             super.issuer.getStock().removeProducts(getProduct(), soldQuantity);
@@ -188,7 +188,7 @@ public abstract class Order {
             Market.getInstance().getHistory().addBuySellRecord(super.issuer.getRound(), super.product, 0, soldQuantity, 0, 0);
             Log.getInstance().addMessage(super.issuer.getName() + " Sold " + soldQuantity + " units of " + super.product.getName() + " for " + totalPrice + " to " + partner.getType() + " " + partner.getName(), Log.Level.INFO);
 
-            /*
+            /**
              * Check if the order is complete
              */
             if (super.quantity == 0) {
@@ -236,16 +236,16 @@ public abstract class Order {
 
             double recommendedPrice = getProduct().getRecommendedPrice();
 
-            // Adjust the price based on the player ratio and quantity factor
+            /**Adjust the price based on the player ratio and quantity factor*/
             if (Double.isNaN(playerRatio)) {
                 return recommendedPrice;
             }
             double quantityFactor = playerDesiredQuantityLastRound > 0 ? playerBoughtPreviousRound / playerDesiredQuantityLastRound : 0;
 
-            double adjustedPrice = recommendedPrice * (1 + playerRatio/10 + quantityFactor);
+            double adjustedPrice = recommendedPrice * (1 + playerRatio / 10 + quantityFactor);
 
 
-            // Round the price to cents
+            /**Round the price to cents*/
             adjustedPrice = Math.floor(adjustedPrice * 100) / 100.0;
             return Math.min(adjustedPrice, maxPrice);
         }
@@ -263,7 +263,7 @@ public abstract class Order {
         public void execute(Player partner, int boughtQuantity) {
             double totalPrice = boughtQuantity * getPriceUnit();
 
-            /*
+            /**
              * Increase stock quantity and reduce player's money
              */
             super.issuer.getStock().addProducts(getProduct(), boughtQuantity);
@@ -273,7 +273,7 @@ public abstract class Order {
             super.issuer.getHistory().addBuySellRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
             Market.getInstance().getHistory().addBuySellRecord(super.issuer.getRound(), super.product, boughtQuantity, 0, 0, 0);
             Log.getInstance().addMessage(super.issuer.getName() + " bought " + boughtQuantity + " units of " + super.product.getName() + " for " + totalPrice + " from " + partner.getType() + " " + partner.getName(), Log.Level.INFO);
-            /*
+            /**
              * check if the order is complete
              */
             if (super.quantity == 0) {
