@@ -162,12 +162,12 @@ public abstract class Order {
 
             /**Adjust the price based on the player ratio*/
 
-            // playerRatio -> 1 -> player is the only one buying -> lower price
-            // playerRatio -> 0 -> player is not buying -> higher price
-            // playerDesireRatio -> 1 -> player is the only one wanting to buy -> lower price
-            // playerDesireRatio -> 0 -> player is not wanting to buy -> higher price
+            // playerRatio -> 1 -> player is the only one selling -> high price
+            // playerRatio -> 0 -> player is not selling -> lower price
+            // playerDesireRatio -> 1 -> player is the only one wanting to sell -> higher price
+            // playerDesireRatio -> 0 -> player is not wanting to sell -> lower price
             double factor = (playerDesireRatio * playerRatio) / 10;
-            double adjustedPrice = recommendedPrice * (1 + factor );
+            double adjustedPrice = recommendedPrice * (1 - factor);
 
             // Round the price to cents
             adjustedPrice = Math.floor(adjustedPrice * 100) / 100.0;
@@ -257,7 +257,7 @@ public abstract class Order {
             // playerDesireRatio -> 1 -> player is the only one wanting to buy -> lower price
             // playerDesireRatio -> 0 -> player is not wanting to buy -> higher price
             double factor = (playerDesireRatio * playerRatio) / 10;
-            double adjustedPrice = recommendedPrice * (1 + factor );
+            double adjustedPrice = recommendedPrice * (1 + factor);
 
             /**Round the price to cents*/
             adjustedPrice = Math.floor(adjustedPrice * 100) / 100.0;
