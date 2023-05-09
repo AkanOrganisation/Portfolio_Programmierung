@@ -121,7 +121,7 @@ public class Synchronizer {
     public static void setRoundFinished() throws InterruptedException {
         roundStarted = new CountDownLatch(1);
         roundFinished.countDown();
-        Thread.sleep(10);
+        //Thread.sleep(10);
     }
 
     /**
