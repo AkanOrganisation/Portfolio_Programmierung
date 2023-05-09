@@ -135,6 +135,7 @@ public abstract class Order {
             super(issuer, item, quantity, minSellPrice);
             Market.getInstance().addSellOrder(this);
             getIssuer().getHistory().addBuySellRecord(Main.getRound(), item, 0, 0, quantity, 0);
+            Market.getInstance().getHistory().addBuySellRecord(Main.getRound(), item, 0, 0, quantity, 0);
 
         }
 
@@ -145,21 +146,28 @@ public abstract class Order {
 
         private double calculateSellPrice(double minSellPrice) {
             int currentRound = Main.getRound();
-            double playerSoldPreviousRound = getIssuer().getHistory().getSold(currentRound - 1, getProduct());
-            double marketSoldPreviousRound = Market.getInstance().getHistory().getSold(currentRound - 1, getProduct());
-            double playerRatio = playerSoldPreviousRound / marketSoldPreviousRound;
-
+            int playerSoldPreviousRound = getIssuer().getHistory().getSold(currentRound - 1, getProduct());
+            int marketSoldPreviousRound = Market.getInstance().getHistory().getSold(currentRound - 1, getProduct());
+            double playerRatio = (double) playerSoldPreviousRound / marketSoldPreviousRound;
+            if (Double.isNaN(playerRatio)) {
+                playerRatio = 0;
+            }
             int playerDesiredQuantityLastRound = getIssuer().getHistory().getDesiredSell(currentRound - 1, getProduct());
-
+            int marketDesiredQuantityLastRound = Market.getInstance().getHistory().getDesiredSell(currentRound - 1, getProduct());
+            double playerDesireRatio = (double) playerDesiredQuantityLastRound / marketDesiredQuantityLastRound;
+            if (Double.isNaN(playerDesireRatio)) {
+                playerDesireRatio = 0;
+            }
             double recommendedPrice = getProduct().getRecommendedPrice();
 
             /**Adjust the price based on the player ratio*/
-            if (Double.isNaN(playerRatio)) {
-                return recommendedPrice;
-            }
-            double quantityFactor = playerDesiredQuantityLastRound > 0 ? playerSoldPreviousRound / playerDesiredQuantityLastRound : 0;
 
-            double adjustedPrice = recommendedPrice * (1 + playerRatio / 10 - quantityFactor);
+            // playerRatio -> 1 -> player is the only one buying -> lower price
+            // playerRatio -> 0 -> player is not buying -> higher price
+            // playerDesireRatio -> 1 -> player is the only one wanting to buy -> lower price
+            // playerDesireRatio -> 0 -> player is not wanting to buy -> higher price
+            double factor = (playerDesireRatio * playerRatio) / 10;
+            double adjustedPrice = recommendedPrice * (1 + factor );
 
             // Round the price to cents
             adjustedPrice = Math.floor(adjustedPrice * 100) / 100.0;
@@ -218,6 +226,7 @@ public abstract class Order {
             super.priceUnit = calculatePrice(maxPrice);
             Market.getInstance().addBuyOrder(this);
             getIssuer().getHistory().addBuySellRecord(Main.getRound(), item, 0, 0, 0, quantity);
+            Market.getInstance().getHistory().addBuySellRecord(Main.getRound(), item, 0, 0, 0, quantity);
 
         }
 
@@ -228,22 +237,27 @@ public abstract class Order {
 
         private double calculateBuyPrice(double maxPrice) {
             int currentRound = Main.getRound();
-            double playerBoughtPreviousRound = getIssuer().getHistory().getBought(currentRound - 1, getProduct());
-            double marketBoughtPreviousRound = Market.getInstance().getHistory().getBought(currentRound - 1, getProduct());
-            double playerRatio = playerBoughtPreviousRound / marketBoughtPreviousRound;
-
+            int playerBoughtPreviousRound = getIssuer().getHistory().getBought(currentRound - 1, getProduct());
+            int marketBoughtPreviousRound = Market.getInstance().getHistory().getBought(currentRound - 1, getProduct());
+            double playerRatio = (double) playerBoughtPreviousRound / marketBoughtPreviousRound;
+            if (Double.isNaN(playerRatio)) {
+                playerRatio = 0;
+            }
             int playerDesiredQuantityLastRound = getIssuer().getHistory().getDesiredBuy(currentRound - 1, getProduct());
-
+            int marketDesiredQuantityLastRound = Market.getInstance().getHistory().getDesiredBuy(currentRound - 1, getProduct());
+            double playerDesireRatio = (double) playerDesiredQuantityLastRound / marketDesiredQuantityLastRound;
+            if (Double.isNaN(playerDesireRatio)) {
+                playerDesireRatio = 0;
+            }
             double recommendedPrice = getProduct().getRecommendedPrice();
 
-            /**Adjust the price based on the player ratio and quantity factor*/
-            if (Double.isNaN(playerRatio)) {
-                return recommendedPrice;
-            }
-            double quantityFactor = playerDesiredQuantityLastRound > 0 ? playerBoughtPreviousRound / playerDesiredQuantityLastRound : 0;
-
-            double adjustedPrice = recommendedPrice * (1 + playerRatio / 10 + quantityFactor);
-
+            /**Adjust the price based on the following factor*/
+            // playerRatio -> 1 -> player is the only one buying -> lower price
+            // playerRatio -> 0 -> player is not buying -> higher price
+            // playerDesireRatio -> 1 -> player is the only one wanting to buy -> lower price
+            // playerDesireRatio -> 0 -> player is not wanting to buy -> higher price
+            double factor = (playerDesireRatio * playerRatio) / 10;
+            double adjustedPrice = recommendedPrice * (1 + factor );
 
             /**Round the price to cents*/
             adjustedPrice = Math.floor(adjustedPrice * 100) / 100.0;
