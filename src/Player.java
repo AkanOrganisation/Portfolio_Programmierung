@@ -407,9 +407,11 @@ class Stock {
      */
     public void addProducts(CatalogProduct catalogProduct, int quantity) {
         List<CatalogProduct.Product> products = stock.computeIfAbsent(catalogProduct, k -> new ArrayList<>());
-        for (int i = 0; i < quantity; i++) {
-            CatalogProduct.Product product = new CatalogProduct.Product();
-            products.add(product);
+        synchronized (products) {
+            for (int i = 0; i < quantity; i++) {
+                CatalogProduct.Product product = new CatalogProduct.Product();
+                products.add(product);
+            }
         }
         Log.getInstance().addMessage("Added %d products of type %s to the stock".formatted(quantity, catalogProduct.getName()), Log.Level.DEBUG);
     }
