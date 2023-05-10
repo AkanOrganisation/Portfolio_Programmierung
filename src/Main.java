@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+
 /**
  * The Main class represents the entry point of the program. It initializes the
  * game by loading the catalog and players from JSON files, starting the market
