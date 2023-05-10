@@ -60,6 +60,7 @@
     {
       "name": "Bayer",
       "type": "consumer",
+      "priceTolerance": 0.11,
       "activities": [
         {
           "type": "Consume",
