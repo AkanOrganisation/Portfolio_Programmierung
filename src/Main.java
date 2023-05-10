@@ -24,7 +24,7 @@ public class Main {
     /**
      * The maximum number of rounds for the game.
      */
-    static int maxRounds = 200;
+    static int maxRounds = 20;
     /**
      * The file path of the catalog JSON file.
      */
@@ -129,6 +129,7 @@ public class Main {
              * Print round's log
              */
             Log.getInstance().printMessagesForRound(currentRound);
+            Market.getInstance().getHistory().printRoundSummary();
 
             /**
              * All players finished their turn, end set the round as finished
@@ -136,6 +137,9 @@ public class Main {
             Log.getInstance().setRound(++currentRound);
             Synchronizer.setRoundFinished();
         }
+        // print summary of all transactions
+        Market.getInstance().getHistory().printSummary();
+
 
         /**
          * Notify all that the game is finished
