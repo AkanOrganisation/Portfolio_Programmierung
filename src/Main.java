@@ -29,11 +29,11 @@ public class Main {
     /**
      * The file path of the catalog JSON file.
      */
-    static String catalogFilePath = "./src/data/catalog.json";
+    static String catalogFilePath = "./catalog.json";
     /**
      * The file path of the players JSON file.
      */
-    static String playersFilePath = "./src/data/players.json";
+    static String playersFilePath = "./players.json";
     /**
      * The current round number.
      */
