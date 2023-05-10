@@ -255,7 +255,7 @@ public class Player {
             this.name = name;
             this.type = Type.fromName(type);
             this.activities = activities;
-
+            this.priceTolerance = priceTolerance;
             controllers.add(this);
         }
 
