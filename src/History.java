@@ -7,60 +7,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class History {
     /**
-     * ProductRecord class represents the buying and selling activities, and the desired and actual consumption
-     * of a single product in a round of the simulation.
-     */
-    private static class ProductRecord {
-        int desiredSell;
-        int sold;
-        int desiredBuy;
-        int bought;
-        int desiredConsumption;
-        int consumed;
-
-        /**
-         * Constructs a new ProductRecord object with the given values.
-         *
-         * @param bought             the number of units bought
-         * @param sold               the number of units sold
-         * @param desiredSell        the desired number of units to sell
-         * @param desiredBuy         the desired number of units to buy
-         * @param desiredConsumption the desired number of units to consume
-         * @param consumed           the number of units consumed
-         */
-        private ProductRecord(int bought, int sold, int desiredSell, int desiredBuy, int desiredConsumption, int consumed) {
-            this.bought = bought;
-            this.sold = sold;
-            this.consumed = consumed;
-            this.desiredSell = desiredSell;
-            this.desiredBuy = desiredBuy;
-            this.desiredConsumption = desiredConsumption;
-        }
-
-        /**
-         * Constructs a new ProductRecord object with the given values, setting the desired consumption and consumed
-         * fields to zero.
-         *
-         * @param bought      the number of units bought
-         * @param sold        the number of units sold
-         * @param desiredSell the desired number of units to sell
-         * @param desiredBuy  the desired number of units to buy
-         */
-        private ProductRecord(int bought, int sold, int desiredSell, int desiredBuy) {
-            new ProductRecord(bought, sold, desiredSell, desiredBuy, 0, 0);
-        }
-    }
-
-    /**
      * The history Map stores the ProductRecord objects for each product in each round of the simulation.
      */
-    private final Map<Integer, Map<CatalogProduct, ProductRecord>> history;
-
+    private final Map<Integer, Map<CatalogProduct, ProductRecord>> historyProRound;
+    private final Map<CatalogProduct, ProductRecord> summary;
     /**
      * Constructs a new History object with an empty ConcurrentHashMap.
      */
     public History() {
-        history = new ConcurrentHashMap<>();
+        historyProRound = new ConcurrentHashMap<>();
+        summary = new ConcurrentHashMap<>();
     }
 
     /**
@@ -74,8 +30,17 @@ public class History {
      * @param desiredBuy  the desired number of units to buy
      */
     public void addBuySellRecord(int round, CatalogProduct product, int bought, int sold, int desiredSell, int desiredBuy) {
-        Map<CatalogProduct, ProductRecord> roundMap = history.computeIfAbsent(round, k -> new ConcurrentHashMap<>());
+        Map<CatalogProduct, ProductRecord> roundMap = historyProRound.computeIfAbsent(round, k -> new ConcurrentHashMap<>());
         ProductRecord record = roundMap.computeIfAbsent(product, k -> new ProductRecord(0, 0, 0, 0));
+        record.desiredBuy += desiredBuy;
+        record.bought += bought;
+        record.desiredSell += desiredSell;
+        record.sold += sold;
+        this.updateSummary(product, bought, sold, desiredSell, desiredBuy);
+    }
+
+    private void updateSummary(CatalogProduct product, int bought, int sold, int desiredSell, int desiredBuy) {
+        ProductRecord record = summary.computeIfAbsent(product, k -> new ProductRecord(0, 0, 0, 0));
         record.desiredBuy += desiredBuy;
         record.bought += bought;
         record.desiredSell += desiredSell;
@@ -91,7 +56,7 @@ public class History {
      * @return the ProductRecord for the given round and product
      */
     public ProductRecord getRecord(int round, CatalogProduct product) {
-        return history.getOrDefault(round, new ConcurrentHashMap<>()).getOrDefault(product, new ProductRecord(0, 0, 0, 0));
+        return historyProRound.getOrDefault(round, new ConcurrentHashMap<>()).getOrDefault(product, new ProductRecord(0, 0, 0, 0));
     }
 
     /**
@@ -136,6 +101,81 @@ public class History {
      */
     public int getDesiredBuy(int round, CatalogProduct product) {
         return getRecord(round, product).desiredBuy;
+    }
+
+    public void printSummary() {
+        System.out.println("Summary of buying and selling activities:");
+        for (Map.Entry<CatalogProduct, ProductRecord> entry : summary.entrySet()) {
+            String productName = entry.getKey().getName();
+            ProductRecord productRecord = entry.getValue();
+            System.out.println("    " + productName + ":");
+            System.out.println("        Desired sell: " + productRecord.desiredSell);
+            System.out.println("        Actual sell: " + productRecord.sold);
+            System.out.println("        Desired buy: " + productRecord.desiredBuy);
+            System.out.println("        Actual buy: " + productRecord.bought);
+        }
+
+
+    }
+
+    public void printRoundSummary() {
+        System.out.println("Summary of buying and selling activities:");
+        int i = Main.currentRound;
+        System.out.println("Round " + i + ":");
+        for (Map.Entry<CatalogProduct, ProductRecord> entry : historyProRound.get(i).entrySet()) {
+            String productName = entry.getKey().getName();
+            ProductRecord productRecord = entry.getValue();
+            System.out.println("    " + productName + ":");
+            System.out.println("        Desired sell: " + productRecord.desiredSell);
+            System.out.println("        Actual sell: " + productRecord.sold);
+            System.out.println("        Desired buy: " + productRecord.desiredBuy);
+            System.out.println("        Actual buy: " + productRecord.bought);
+        }
+    }
+
+    /**
+     * ProductRecord class represents the buying and selling activities, and the desired and actual consumption
+     * of a single product in a round of the simulation.
+     */
+    private static class ProductRecord {
+        int desiredSell;
+        int sold;
+        int desiredBuy;
+        int bought;
+        int desiredConsumption;
+        int consumed;
+
+        /**
+         * Constructs a new ProductRecord object with the given values.
+         *
+         * @param bought             the number of units bought
+         * @param sold               the number of units sold
+         * @param desiredSell        the desired number of units to sell
+         * @param desiredBuy         the desired number of units to buy
+         * @param desiredConsumption the desired number of units to consume
+         * @param consumed           the number of units consumed
+         */
+        private ProductRecord(int bought, int sold, int desiredSell, int desiredBuy, int desiredConsumption, int consumed) {
+            this.bought = bought;
+            this.sold = sold;
+            this.consumed = consumed;
+            this.desiredSell = desiredSell;
+            this.desiredBuy = desiredBuy;
+            this.desiredConsumption = desiredConsumption;
+        }
+
+        /**
+         * Constructs a new ProductRecord object with the given values, setting the desired consumption and consumed
+         * fields to zero.
+         *
+         * @param bought      the number of units bought
+         * @param sold        the number of units sold
+         * @param desiredSell the desired number of units to sell
+         * @param desiredBuy  the desired number of units to buy
+         */
+        private ProductRecord(int bought, int sold, int desiredSell, int desiredBuy) {
+            new ProductRecord(bought, sold, desiredSell, desiredBuy, 0, 0);
+        }
     }
 }
 
