@@ -121,7 +121,7 @@ public class History {
     public void printRoundSummary() {
         System.out.println("Summary of buying and selling activities:");
         int i = Main.currentRound;
-        System.out.println("Round " + i + ":");
+        System.out.println("Round " + (i+1) + ":");
         for (Map.Entry<CatalogProduct, ProductRecord> entry : historyProRound.get(i).entrySet()) {
             String productName = entry.getKey().getName();
             ProductRecord productRecord = entry.getValue();
