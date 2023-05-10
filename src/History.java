@@ -11,6 +11,7 @@ public class History {
      */
     private final Map<Integer, Map<CatalogProduct, ProductRecord>> historyProRound;
     private final Map<CatalogProduct, ProductRecord> summary;
+
     /**
      * Constructs a new History object with an empty ConcurrentHashMap.
      */
@@ -103,6 +104,11 @@ public class History {
         return getRecord(round, product).desiredBuy;
     }
 
+    /**
+     * Prints a summary of buying and selling activities for all rounds.
+     * The method iterates over the summary map and prints the product name along with
+     * the desired sell, actual sell, desired buy, and actual buy quantities for each product.
+     */
     public void printSummary() {
         System.out.println("Summary of buying and selling activities:");
         for (Map.Entry<CatalogProduct, ProductRecord> entry : summary.entrySet()) {
@@ -118,10 +124,16 @@ public class History {
 
     }
 
+    /**
+     * Prints a summary of buying and selling activities for the current round only.
+     * The method retrieves the current round number from the Main class, then iterates over
+     * the historyProRound map for the current round and prints the product name along with
+     * the desired sell, actual sell, desired buy, and actual buy quantities for each product.
+     */
     public void printRoundSummary() {
         System.out.println("Summary of buying and selling activities:");
         int i = Main.currentRound;
-        System.out.println("Round " + (i+1) + ":");
+        System.out.println("Round " + (i + 1) + ":");
         for (Map.Entry<CatalogProduct, ProductRecord> entry : historyProRound.get(i).entrySet()) {
             String productName = entry.getKey().getName();
             ProductRecord productRecord = entry.getValue();
